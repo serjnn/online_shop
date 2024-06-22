@@ -1,0 +1,31 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h2>User Registration</h2>
+
+<form action="/register" method="post">
+    <div>
+        <label for="mail">Ваша почта:</label><br>
+        <input type="text" id="mail" name="mail"/><br>
+    </div>
+    <div>
+        <label for="password">Пароль:</label><br>
+        <input type="password" id="password" name="password" /><br>
+    </div>
+    <div>
+        <label for="role">Ваша роль:</label><br>
+        <input type="text" id="role" name="role" /><br>
+    </div>
+
+
+    <div>
+        <button type="submit">Зарегистрироваться</button>
+    </div>
+</form>
+
+
+</body>
+</html>
