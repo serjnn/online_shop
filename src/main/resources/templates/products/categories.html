@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Товары по категориям</title>
+</head>
+<body>
+
+<ul th:each="cat : ${cats}">
+    <li >
+        <a th:text="${cat}" th:href="@{|/products?category=${cat}|}"></a>
+    </li>
+</ul>
+<h1>Все товары</h1>
+<ul th:each="prod : ${prods}">
+    <li th:text="${prod.name} + '   ' + ${prod.description} +'   ' + ${prod.price}">
+</ul>
+
+<button  ><a href="/">Вернуться назад</a></button>
+
+</body>
+</html>

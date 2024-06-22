@@ -28,7 +28,9 @@ public class SecurityConfiguration {
         return httpSecurity.authorizeHttpRequests(registry ->
                 {
                     registry.requestMatchers("/", "/register").permitAll();
+                    registry.requestMatchers("/categories").hasRole("client");
                     registry.requestMatchers("/adminpage").hasRole("admin");
+                    registry.anyRequest().permitAll();
                 })
                 .formLogin(log -> {
                     log

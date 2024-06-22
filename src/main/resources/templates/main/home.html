@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
+>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,6 +9,20 @@
 <body>
 home
 <button  ><a href="logout">Выйти</a></button>
+    <h3 th:text="'Приветствую нашего ' + ${role} + '- ' +${client.mail}"></h3>
+
+<button  ><a href="/categories">Категории товаров</a></button>
+
+<div sec:authorize="hasRole('manager')">
+    <h1>Welcome, manager!</h1>
+    <!-- Здесь выводим информацию, доступную только администраторам -->
+    <button  ><a href="/managerpage">Страница менеджера</a></button>
+</div>
+<div sec:authorize="hasRole('admin')">
+    <h1>здарова</h1>
+    <button  ><a href="/adminpage">Страница администратора</a></button>
+
+</div>
 
 </body>
 </html>

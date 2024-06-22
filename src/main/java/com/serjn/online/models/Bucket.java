@@ -24,8 +24,5 @@ public class Bucket {
     @OneToMany
     List<Product> products;
 
-    @OneToOne
-    @JoinColumn(name = "cat_id")
-    private Category category;
 
 }
