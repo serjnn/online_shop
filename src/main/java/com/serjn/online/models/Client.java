@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -29,9 +32,16 @@ public class Client {
     @Column(length = 10, nullable = false)
     private String role;
 
-    public Client(String mail, String password, String role) {
+
+    private String cart = "-";
+
+    private int balance = 0;
+
+    public Client(String mail, String password, Bucket bucket, String role) {
         this.mail = mail;
         this.password = password;
+
+        this.bucket = bucket;
         this.role = role;
     }
 }

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h4 th:text="'Ваш адресс: '+ ${client.address}"></h4>
+<h4 th:text="'Ваш баланс: '+ ${client.balance}"></h4>
+<h3>Ваша корзина:</h3>
+<ul>
+    <li th:each="prod : ${prods}">
+        <span th:text="${prod.id} + '  ' + ${prod.name} + '   ' + ${prod.description} + '   ' + ${prod.price}"></span>
+
+    </li>
+</ul>
+<h1 th:text="'Сумма заказа: ' + ${sum}"></h1>
+<button  ><a href="/categories">Назад</a></button>
+
+</body>
+</html>

@@ -13,26 +13,6 @@ public class OnlineApplication {
 }
 
 
-/*
-* USER
-*OneToOne Bucket
-*
-*
-*
-*
-* Bucket
-* OneToOne User
-* OneToMany Product
-*
-*
-*
-*
-*Category
-*
-*Product
-* ManyToOne Bucket
-*
-*
-*
-*
-* */
+// DTO
+// bean scope
+//
