@@ -25,6 +25,12 @@ public class ClientService {
     @Autowired
     ProductService productService;
 
+    public Client finById(Long clientId){
+        return clientRepository.findById(clientId)
+                .orElseThrow(()->
+                new NoSuchElementException("No client with id: " +clientId));
+    }
+
 
     public Client findByMail(String mail){
         return clientRepository.findByMail(mail).orElseThrow(()->
@@ -57,5 +63,10 @@ public class ClientService {
                 .mapToInt(Integer::valueOf)
                 .mapToObj(i -> productService.findById((long) i))
                 .toArray(Product[]::new);
+    }
+    public void changeBalance(Long clienId, int balance){
+        Client client = finById(clienId);
+        client.setBalance(balance);
+        save(client);
     }
 }

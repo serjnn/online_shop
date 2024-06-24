@@ -2,7 +2,9 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.models.Category;
+import com.serjn.online.models.OrderDetails;
 import com.serjn.online.models.Product;
+import com.serjn.online.repositories.OrderDetailsRepository;
 import com.serjn.online.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ProductService {
+
+
 
     @Autowired
     ProductRepository productRepository;
@@ -30,4 +34,6 @@ public class ProductService {
         return productRepository.findById(id).orElseThrow(() ->
                 new NoSuchElementException("No product with id: " + id));
     }
+
+
 }

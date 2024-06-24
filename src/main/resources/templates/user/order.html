@@ -6,6 +6,16 @@
 </head>
 <body>
 <h4 th:text="'Ваш адресс: '+ ${client.address}"></h4>
+<form action="/address" method="post">
+    <div>
+        <label for="address">ur address:</label><br>
+        <input type="text" id="address" name="address"/><br>
+    </div>
+
+    <div>
+        <button type="submit">add address</button>
+    </div>
+</form>
 <h4 th:text="'Ваш баланс: '+ ${client.balance}"></h4>
 <h3>Ваша корзина:</h3>
 <ul>
@@ -16,6 +26,12 @@
 </ul>
 <h1 th:text="'Сумма заказа: ' + ${sum}"></h1>
 <button  ><a href="/categories">Назад</a></button>
+
+<form action="/buy" method="post">
+
+    <button type="submit">Купить</button>
+
+</form>
 
 </body>
 </html>
