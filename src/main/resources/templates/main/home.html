@@ -10,6 +10,7 @@
 home
 <button  ><a href="logout">Выйти</a></button>
     <h3 th:text="'Приветствую нашего ' + ${role} + '- ' +${client.mail}"></h3>
+    <h2 th:text="'Ваша корзина: ' + ${client.cart}"></h2>
 
 <button  ><a href="/categories">Категории товаров</a></button>
 

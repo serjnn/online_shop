@@ -56,10 +56,11 @@ public class ClientController {
                                @RequestParam String role) {
         Bucket bucket = new Bucket();
 
-        Client client = new Client(mail, passwordEncoder.encode(password),
-                bucket, role.toLowerCase());
+        Client client = new Client(mail,
+                passwordEncoder.encode(password),
+                bucket,
+                role.toLowerCase());
         bucket.setClient(client);
-//        bucketService.save(bucket);
         clientService.save(client);
         return "redirect:/login";
     }
@@ -102,43 +103,32 @@ public class ClientController {
 
     @PostMapping("/buy")
     public String buy(){
-        Client client = clientService.findCurrentClient();
-        Product[] prods = clientService.getNoramlCart(client);
-        int sum = Arrays.stream(prods).mapToInt(Product::getPrice).sum();
+        return clientService.buy() ? "redirect:/orderdetails" : "redirect:/failture";
 
-        if (client.getAddress() != null  && client.getBalance() >= sum )
-        {
-            OrderDetails orderDetails = new OrderDetails(
-                    client.getId(),
-                    client.getCart().substring(1,
-                            client.getCart().length()-1), // что то не так тут точно
-                    sum
-            );
-            orderDetailsService.saveOrder(orderDetails);
-            client.setBalance(client.getBalance() - sum);
-            client.setCart("-");
-            clientService.save(client);
-            return "redirect:/orderdetails"; // перенести эту логику в сервис
-        }
-        else {return "redirect:/";} // понять как возвращать ошибки и вообще
-        // разораться в них
 
     }
     @GetMapping("/orderdetails")
     public  String orderdetails(Model model){
         Client client = clientService.findCurrentClient();
-        model.addAttribute("order",
+        model.addAttribute("orders",
                 orderDetailsService.findByClientId(client.getId()));
         return "user/orderdetails";
     }
 
     @PostMapping("/address")
     public String address(@RequestParam String address){
-        Client client = clientService.findCurrentClient()   ;
-        client.setAddress( address);
-        clientService.save(client);
+        clientService.setAddress(address);
         return "redirect:/order";
     }
+    @GetMapping("/failture")
+    public String failture(){
+        return"user/failture";
+    }
 
+    @PostMapping("deleteOrders")
+    public String deleteOrders(){
+        orderDetailsService.deleteALl();
+        return "redirect:/orderdetails";
+    }
 
 }

@@ -5,6 +5,7 @@ import com.serjn.online.repositories.OrderDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -16,11 +17,11 @@ public class OrderDetailsService {
         orderDetailsRepository.save(orderDetails);
     }
 
-    public OrderDetails findByClientId(Long id){
-        return orderDetailsRepository.findByClientId(id)
-                .orElseThrow(() -> new NoSuchElementException("No " +
-                        "order details with client id: " + id) );
+    public List<OrderDetails> findByClientId(Long id){
+        return orderDetailsRepository.findByClientId(id);
 
-
+    }
+    public void deleteALl() {
+        orderDetailsRepository.deleteAll();
     }
 }
