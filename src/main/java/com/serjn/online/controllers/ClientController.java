@@ -3,16 +3,10 @@ package com.serjn.online.controllers;
 
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.Client;
-import com.serjn.online.models.OrderDetails;
 import com.serjn.online.models.Product;
-import com.serjn.online.repositories.BucketRepository;
-import com.serjn.online.repositories.OrderDetailsRepository;
-import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
-import com.serjn.online.sevices.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -78,7 +72,6 @@ public class ClientController {
     }
 
 
-
     @GetMapping("bucket")
     public String bucket(Model model) {
         Bucket bucket = clientService.findCurrentClient().getBucket();
@@ -102,13 +95,14 @@ public class ClientController {
     }
 
     @PostMapping("/buy")
-    public String buy(){
+    public String buy() {
         return clientService.buy() ? "redirect:/orderdetails" : "redirect:/failture";
 
 
     }
+
     @GetMapping("/orderdetails")
-    public  String orderdetails(Model model){
+    public String orderdetails(Model model) {
         Client client = clientService.findCurrentClient();
         model.addAttribute("orders",
                 orderDetailsService.findByClientId(client.getId()));
@@ -116,17 +110,18 @@ public class ClientController {
     }
 
     @PostMapping("/address")
-    public String address(@RequestParam String address){
+    public String address(@RequestParam String address) {
         clientService.setAddress(address);
         return "redirect:/order";
     }
+
     @GetMapping("/failture")
-    public String failture(){
-        return"user/failture";
+    public String failture() {
+        return "user/failture";
     }
 
     @PostMapping("deleteOrders")
-    public String deleteOrders(){
+    public String deleteOrders() {
         orderDetailsService.deleteALl();
         return "redirect:/orderdetails";
     }
