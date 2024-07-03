@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class ClientController {
@@ -84,11 +84,10 @@ public class ClientController {
 
     @GetMapping("/order")
     public String order(Model model) {
-
         Client curClient = clientService.findCurrentClient();
-        Product[] prods = clientService.getNoramlCart(curClient);
+        List<Product> prods = clientService.getProductListOfClient(curClient);
         model.addAttribute("sum",
-                Arrays.stream(prods).mapToInt(Product::getPrice).sum());
+                prods.stream().mapToInt(Product::getPrice).sum());
         model.addAttribute("prods", prods);
         model.addAttribute("client", curClient);
         return "user/order";
