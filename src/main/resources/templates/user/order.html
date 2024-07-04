@@ -19,8 +19,8 @@
 <h4 th:text="'Ваш баланс: '+ ${client.balance}"></h4>
 <h3>Ваша корзина:</h3>
 <ul>
-    <li th:each="prod : ${prods}">
-        <span th:text="${prod.id} + '  ' + ${prod.name} + '   ' + ${prod.description} + '   ' + ${prod.price}"></span>
+    <li th:each="bitem : ${bitems}">
+        <span th:text="${bitem.product.name} + '  в количестве: ' + ${bitem.quantity}"></span>
 
     </li>
 </ul>

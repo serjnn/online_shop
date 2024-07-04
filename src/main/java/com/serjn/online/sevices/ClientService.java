@@ -2,9 +2,9 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.models.Bucket;
+import com.serjn.online.models.BucketItems;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
-import com.serjn.online.models.Product;
 import com.serjn.online.repositories.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +62,9 @@ public class ClientService {
 
 
     @Transactional
-    public List<Product> getProductListOfClient(Client client) {
+    public List<BucketItems> getBItemsListOfClient(Client client) {
         Bucket bucket = client.getBucket();
-        return bucket.getProducts();
+        return bucket.getBucketItems();
 
 
 
@@ -80,15 +80,13 @@ public class ClientService {
     @Transactional
     public boolean buy() {
         Client client = findCurrentClient();
-        List<Product> prods = getProductListOfClient(client);
-        int sum = prods.stream().mapToInt(Product::getPrice).sum();
-
-        String prodsIds = prods
-                .stream()
-                .mapToLong(Product::getId)
+        List<BucketItems> bitems = getBItemsListOfClient(client);
+        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
+                i.getQuantity()).sum();
+        String strIDS = bitems.stream()
+                .mapToLong(i -> i.getProduct().getId())
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(","));
-
 
 
 
@@ -96,14 +94,14 @@ public class ClientService {
         if (client.getAddress() != null && client.getBalance() >= sum) {
             OrderDetails orderDetails = new OrderDetails(
                     client.getId(),
-                     prodsIds,
+                     strIDS,
                     sum
             );
             orderDetailsService.saveOrder(orderDetails);
 
             client.setBalance(client.getBalance() - sum);
             Bucket bucket = client.getBucket();
-            bucket.getProducts().clear();
+            bucket.getBucketItems().clear();
             save(client);
             return true;
         }

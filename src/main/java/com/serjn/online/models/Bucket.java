@@ -21,10 +21,8 @@ public class Bucket {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany
-
-    @JoinColumn(name = "product_id")
-    List<Product> products;
+    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL)
+    private List<BucketItems> bucketItems;
 
 
 }

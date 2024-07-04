@@ -2,8 +2,8 @@ package com.serjn.online.controllers;
 
 
 import com.serjn.online.models.Bucket;
+import com.serjn.online.models.BucketItems;
 import com.serjn.online.models.Client;
-import com.serjn.online.models.Product;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,12 +84,13 @@ public class ClientController {
 
     @GetMapping("/order")
     public String order(Model model) {
-        Client curClient = clientService.findCurrentClient();
-        List<Product> prods = clientService.getProductListOfClient(curClient);
-        model.addAttribute("sum",
-                prods.stream().mapToInt(Product::getPrice).sum());
-        model.addAttribute("prods", prods);
-        model.addAttribute("client", curClient);
+        Client client = clientService.findCurrentClient();
+        List<BucketItems> bitems = clientService.getBItemsListOfClient(client);
+        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
+                i.getQuantity()).sum();
+        model.addAttribute("bitems", bitems);
+        model.addAttribute("sum", sum);
+        model.addAttribute("client", client);
         return "user/order";
     }
 
