@@ -6,6 +6,7 @@
 </head>
 <body>
 
+
 <ul th:each="cat : ${cats}">
     <li >
         <a th:text="${cat}" th:href="@{|/products?category=${cat}|}"></a>

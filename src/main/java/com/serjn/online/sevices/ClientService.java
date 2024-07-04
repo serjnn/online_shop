@@ -1,22 +1,21 @@
 package com.serjn.online.sevices;
 
 
+import com.serjn.online.models.Bucket;
+import com.serjn.online.models.BucketItems;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
-import com.serjn.online.models.Product;
 import com.serjn.online.repositories.ClientRepository;
 import jakarta.transaction.Transactional;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @SessionScope
@@ -61,14 +60,15 @@ public class ClientService {
         clientRepository.deleteById(id);
     }
 
-    public Product[] getNoramlCart(Client client) {
-        String full = client.getCart();
-        String[] arr = full.substring(1, full.length() - 1).split(",");
-        return Arrays
-                .stream(arr)
-                .mapToInt(Integer::valueOf)
-                .mapToObj(i -> productService.findById((long) i))
-                .toArray(Product[]::new);
+
+    @Transactional
+    public List<BucketItems> getBItemsListOfClient(Client client) {
+        Bucket bucket = client.getBucket();
+        return bucket.getBucketItems();
+
+
+
+
     }
 
     public void changeBalance(Long clienId, int balance) {
@@ -76,29 +76,37 @@ public class ClientService {
         client.setBalance(balance);
         save(client);
     }
+
     @Transactional
     public boolean buy() {
         Client client = findCurrentClient();
-        Product[] prods = getNoramlCart(client);
-        int sum = Arrays.stream(prods).mapToInt(Product::getPrice).sum();
+        List<BucketItems> bitems = getBItemsListOfClient(client);
+        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
+                i.getQuantity()).sum();
+        String strIDS = bitems.stream()
+                .mapToLong(i -> i.getProduct().getId())
+                .mapToObj(String::valueOf)
+                .collect(Collectors.joining(","));
+
+
+
 
         if (client.getAddress() != null && client.getBalance() >= sum) {
             OrderDetails orderDetails = new OrderDetails(
                     client.getId(),
-                    client.getCart().substring(1,
-                            client.getCart().length() - 1), // что то не так тут точно
+                     strIDS,
                     sum
             );
             orderDetailsService.saveOrder(orderDetails);
 
             client.setBalance(client.getBalance() - sum);
-            client.setCart("-");
+            Bucket bucket = client.getBucket();
+            bucket.getBucketItems().clear();
             save(client);
             return true;
         }
         return false;
     }
-
 
 
     public void setAddress(String address) {
