@@ -21,7 +21,8 @@ public class Bucket {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL,  orphanRemoval = true)
+    // orphanRemoval = true удаляет объекты в таблице BucketItems при очищении списка List<BucketItems>
     private List<BucketItems> bucketItems;
 
 
