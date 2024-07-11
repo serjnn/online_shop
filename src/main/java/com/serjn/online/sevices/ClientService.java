@@ -68,7 +68,6 @@ public class ClientService {
 
 
 
-
     }
 
     public void changeBalance(Long clienId, int balance) {
@@ -101,9 +100,14 @@ public class ClientService {
 
             client.setBalance(client.getBalance() - sum);
             Bucket bucket = client.getBucket();
-            bucket.getBucketItems().clear();
+            List<BucketItems> list = bucket.getBucketItems();
+            list.clear();
+
             save(client);
+
+
             return true;
+
         }
         return false;
     }

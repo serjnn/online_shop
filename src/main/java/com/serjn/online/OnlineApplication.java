@@ -16,3 +16,4 @@ public class OnlineApplication {
 // DTO
 // bean scope
 // jwt
+// tests
