@@ -96,7 +96,7 @@ public class ClientController {
 
     @PostMapping("/buy")
     public String buy() {
-        return clientService.buy() ? "redirect:/orderdetails" : "redirect:/failture";
+        return clientService.buy(clientService.findCurrentClient()) ? "redirect:/orderdetails" : "redirect:/failture";
 
 
     }

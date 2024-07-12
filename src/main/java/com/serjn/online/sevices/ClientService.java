@@ -11,14 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.SessionScope;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-@SessionScope
+
 public class ClientService {
 
     @Autowired
@@ -67,7 +66,6 @@ public class ClientService {
         return bucket.getBucketItems();
 
 
-
     }
 
     public void changeBalance(Long clienId, int balance) {
@@ -77,23 +75,21 @@ public class ClientService {
     }
 
     @Transactional
-    public boolean buy() {
-        Client client = findCurrentClient();
+    public boolean buy(Client client) {
         List<BucketItems> bitems = getBItemsListOfClient(client);
         int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
                 i.getQuantity()).sum();
+        
         String strIDS = bitems.stream()
                 .mapToLong(i -> i.getProduct().getId())
                 .mapToObj(String::valueOf)
                 .collect(Collectors.joining(","));
 
 
-
-
         if (client.getAddress() != null && client.getBalance() >= sum) {
             OrderDetails orderDetails = new OrderDetails(
                     client.getId(),
-                     strIDS,
+                    strIDS,
                     sum
             );
             orderDetailsService.saveOrder(orderDetails);
