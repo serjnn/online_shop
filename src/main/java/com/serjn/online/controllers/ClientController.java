@@ -1,12 +1,20 @@
 package com.serjn.online.controllers;
 
 
+import com.serjn.online.JWT.JwtService;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItems;
 import com.serjn.online.models.Client;
+import com.serjn.online.sevices.ClientDetailService;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +24,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @Controller
 public class ClientController {
-    @Autowired
-    OrderDetailsService orderDetailsService;
+    private final OrderDetailsService orderDetailsService;
+    private final ClientService clientService;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final ClientDetailService clientDetailService ;
+    private final JwtService jwtService;
 
-
-    @Autowired
-    ClientService clientService;
-    @Autowired
-    PasswordEncoder passwordEncoder;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -62,6 +71,33 @@ public class ClientController {
     @GetMapping("/login")
     public String login() {
         return "user/myLogin";
+    }
+
+    @PostMapping("/login")
+    public String authenticate(@RequestParam String username,
+                               @RequestParam String password,
+                               HttpServletResponse response) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken
+                    (username, password));
+        } catch (BadCredentialsException e) {
+            return "redirect:/login?error=true";
+        }
+
+        UserDetails userDetails = clientDetailService.loadUserByUsername(username);
+        String token = jwtService.generateToken(userDetails);
+
+        // Add the JWT token to the response as a header
+        response.setHeader("Authorization", "Bearer " + token);
+
+        // Optionally, you can add the token to a cookie instead
+        Cookie jwtCookie = new Cookie("jwt", token);
+        jwtCookie.setHttpOnly(true); // To prevent JavaScript access
+        jwtCookie.setSecure(true); // Use true if HTTPS
+        jwtCookie.setPath("/");
+        response.addCookie(jwtCookie);
+
+        return "redirect:/"; // Redirect to the home page or another secured page
     }
 
     @GetMapping("/adminpage")
@@ -124,6 +160,12 @@ public class ClientController {
     public String deleteOrders() {
         orderDetailsService.deleteALl();
         return "redirect:/orderdetails";
+    }
+
+    @GetMapping("/some")
+    public String some(){
+
+        return "main/some";
     }
 
 }

@@ -1,5 +1,6 @@
 package com.serjn.online.sevices;
 
+import com.serjn.online.JWT.JwtService;
 import com.serjn.online.models.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -15,15 +16,20 @@ public class ClientDetailService implements UserDetailsService {
 
     @Autowired
     ClientService clientService;
+
+    @Autowired
+    JwtService jwtService;
+
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         Client client = clientService.findByMail(mail);
 
-        return User.builder()
+        UserDetails userDetails=  User.builder()
                 .username(client.getMail())
                 .password(client.getPassword())
                 .roles(Roles(client.getRole()))
                 .build();
+        return userDetails;
     }
 
     private String[] Roles(String role) {
