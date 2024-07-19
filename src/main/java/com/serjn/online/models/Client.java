@@ -21,7 +21,7 @@ public class Client {
     @Column(length = 300, nullable = false)
     private String password;
 
-    @Column(length = 300, nullable = true)
+    @Column(length = 300)
     private String address;
     @JsonIgnore
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
@@ -30,8 +30,6 @@ public class Client {
     @Column(length = 10, nullable = false)
     private String role;
 
-
-    private String cart = "-";
 
     private int balance = 0;
 

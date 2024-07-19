@@ -31,12 +31,10 @@ public class SecurityConfiguration {
                     registry.requestMatchers("/adminpage").hasRole("admin");
                     registry.anyRequest().authenticated();
                 })
-                .formLogin(log -> {
-                    log
-                            .loginPage("/login")
-                            .successHandler(new AuthSuccessHandler())
-                            .permitAll();
-                })
+                .formLogin(log -> log
+                        .loginPage("/login")
+                        .successHandler(new AuthSuccessHandler())
+                        .permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .rememberMe(rememberMe -> rememberMe
                         .key("uniqueAndSecret")
