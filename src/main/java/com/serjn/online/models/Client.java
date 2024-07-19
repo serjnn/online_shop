@@ -1,12 +1,10 @@
 package com.serjn.online.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,17 +21,15 @@ public class Client {
     @Column(length = 300, nullable = false)
     private String password;
 
-    @Column(length = 300, nullable = true)
+    @Column(length = 300)
     private String address;
-
+    @JsonIgnore
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private Bucket bucket;
 
     @Column(length = 10, nullable = false)
     private String role;
 
-
-    private String cart = "-";
 
     private int balance = 0;
 

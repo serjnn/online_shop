@@ -1,6 +1,7 @@
 package com.serjn.online.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,13 +17,12 @@ public class Bucket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;
 
     @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL,  orphanRemoval = true)
-    // orphanRemoval = true удаляет объекты в таблице BucketItems при очищении списка List<BucketItems>
     private List<BucketItems> bucketItems;
 
 
