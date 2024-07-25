@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -25,45 +27,26 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 
 public class SecurityConfiguration {
-@Autowired
-JwtAuthenticationFilter jwtAuthFilter;
+    @Autowired
+    JwtAuthenticationFilter jwtAuthFilter;
 
-@Autowired
-ClientDetailService clientDetailService;
-@Autowired
-AuthenticationProvider authenticationProvider;
+    @Autowired
+    ClientDetailService clientDetailService;
+    @Autowired
+    AuthenticationProvider authenticationProvider;
 
-
-//    private final JwtAuthenticationFilter jwtAuthFilter;
-//
-//    private final ClientDetailService clientDetailService;
-//
-//    private final AuthenticationProvider authenticationProvider;
-//
-//    public SecurityConfiguration(@Lazy JwtAuthenticationFilter jwtAuthFilter,
-//                                 @Lazy ClientDetailService clientDetailService,
-//                                 @Lazy AuthenticationProvider authenticationProvider) {
-//        this.jwtAuthFilter = jwtAuthFilter;
-//        this.clientDetailService = clientDetailService;
-//        this.authenticationProvider = authenticationProvider;
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
             Exception {
         return httpSecurity.authorizeHttpRequests(registry ->
                 {
-                    registry.requestMatchers("/", "/register").permitAll();
+                    registry.requestMatchers("/", "/api/register", "/api/auth").permitAll();
                     registry.requestMatchers("/categories").hasRole("client");
-                    registry.requestMatchers("/adminpage").hasRole("admin");
+                    registry.requestMatchers("/adminpage", "/api/secured").hasRole("admin");
                     registry.anyRequest().permitAll();
                 })
-                .formLogin(log -> {
-                    log
-                            .loginPage("/login")
-                            .successHandler(new AuthSuccessHandler())
-                            .permitAll();
-                })
+
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
@@ -71,6 +54,21 @@ AuthenticationProvider authenticationProvider;
                 .build();
 
 
+    }
+
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
     }
 
     @Bean
@@ -91,6 +89,7 @@ AuthenticationProvider authenticationProvider;
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
