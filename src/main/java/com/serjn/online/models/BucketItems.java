@@ -1,5 +1,6 @@
 package com.serjn.online.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,11 @@ public class BucketItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
+@JsonIgnore
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bucket_id", nullable = false)
     private Bucket bucket;

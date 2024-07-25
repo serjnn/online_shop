@@ -23,12 +23,15 @@ public class Client {
 
     @Column(length = 300)
     private String address;
+
+
     @JsonIgnore
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private Bucket bucket;
 
     @Column(length = 10, nullable = false)
     private String role;
+
 
 
     private int balance = 0;
