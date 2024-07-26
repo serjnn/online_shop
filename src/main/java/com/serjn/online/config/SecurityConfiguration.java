@@ -43,9 +43,15 @@ public class SecurityConfiguration {
                 {
                     registry.requestMatchers("/", "/api/register", "/api/auth").permitAll();
                     registry.requestMatchers("/categories").hasRole("client");
+
                     registry.requestMatchers("/adminpage", "/api/secured").hasRole("admin");
                     registry.anyRequest().permitAll();
                 })
+
+
+
+                })
+
 
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
