@@ -10,6 +10,7 @@ import com.serjn.online.models.OrderDetails;
 import com.serjn.online.repositories.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -82,17 +83,27 @@ public class ClientService {
 
     }
 
-    public void changeBalance(Long clienId, int balance) {
-        Client client = finById(clienId);
-        client.setBalance(balance);
+    public void addBalance(int balance) {
+        Client client = findCurrentClient();
+        client.setBalance(client.getBalance() + balance);
         save(client);
     }
 
     @Transactional
-    public boolean buy(Client client) {
+    public ResponseEntity<?> buy(Client client) {
+
+        if (client.getAddress() == null)
+            return new ResponseEntity<>("Please enter ur address.", HttpStatus.BAD_REQUEST);
+
+
         List<BucketItems> bitems = getBItemsListOfClient(client);
         int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
                 i.getQuantity()).sum();
+
+
+        if (client.getBalance() < sum)
+            return new ResponseEntity<>("Not enough money", HttpStatus.BAD_REQUEST);
+
 
         String strIDS = bitems.stream()
                 .mapToLong(i -> i.getProduct().getId())
@@ -100,26 +111,23 @@ public class ClientService {
                 .collect(Collectors.joining(","));
 
 
-        if (client.getAddress() != null && client.getBalance() >= sum) {
-            OrderDetails orderDetails = new OrderDetails(
-                    client.getId(),
-                    strIDS,
-                    sum
-            );
-            orderDetailsService.saveOrder(orderDetails);
+        OrderDetails orderDetails = new OrderDetails(
+                client.getId(),
+                strIDS,
+                sum
+        );
+        orderDetailsService.saveOrder(orderDetails);
 
-            client.setBalance(client.getBalance() - sum);
-            Bucket bucket = client.getBucket();
-            List<BucketItems> list = bucket.getBucketItems();
-            list.clear();
+        client.setBalance(client.getBalance() - sum);
+        Bucket bucket = client.getBucket();
+        List<BucketItems> list = bucket.getBucketItems();
+        list.clear();
 
-            save(client);
+        save(client);
 
 
-            return true;
+        return ResponseEntity.ok(orderDetails);
 
-        }
-        return false;
     }
 
 
@@ -150,7 +158,7 @@ public class ClientService {
         Client client = findCurrentClient();
         Bucket bucket = bucketService.findBucketByClientId(client.getId());
 
-        Optional<BucketItems> existingBucketItem =bucket.getBucketItems()
+        Optional<BucketItems> existingBucketItem = bucket.getBucketItems()
                 .stream()
                 .filter(bucketItem -> bucketItem.getProduct().getId() == productId)
                 .findFirst();
@@ -160,8 +168,7 @@ public class ClientService {
             bucketItems.setQuantity(bucketItems.getQuantity() + 1);
             bucketService.save(bucket);
             return ResponseEntity.ok("Product has added");
-        }
-        else {
+        } else {
             BucketItems bucketItems = new BucketItems(
                     productService.findById(productId),
                     bucket,
@@ -171,7 +178,7 @@ public class ClientService {
             bucketService.save(bucket);
             return ResponseEntity.ok("Product has added");
 
-    }
+        }
 
-}
+    }
 }

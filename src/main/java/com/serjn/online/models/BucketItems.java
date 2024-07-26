@@ -15,7 +15,7 @@ public class BucketItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-@JsonIgnore
+
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;

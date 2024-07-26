@@ -4,12 +4,10 @@ package com.serjn.online.controllers;
 import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.JWT.JwtService;
-import com.serjn.online.models.BucketItems;
-import com.serjn.online.models.Category;
-import com.serjn.online.models.Client;
-import com.serjn.online.models.Product;
+import com.serjn.online.models.*;
 import com.serjn.online.sevices.ClientDetailService;
 import com.serjn.online.sevices.ClientService;
+import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +24,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/")
 public class ClientRestController {
+
+    @Autowired
+    OrderDetailsService orderDetailsService;
 
     @Autowired
     ProductService productService;
@@ -60,7 +61,8 @@ public class ClientRestController {
     @PostMapping("/auth")
     public ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(), authRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(),
+                    authRequest.getPassword()));
         } catch (BadCredentialsException e) {
 
             return new ResponseEntity<>(new Error(), HttpStatus.UNAUTHORIZED);
@@ -94,8 +96,9 @@ public class ClientRestController {
 
 
     @GetMapping("/products/{id}")
-    public void addToCart(@PathVariable("id") Long id){
+    public ResponseEntity<String> addToCart(@PathVariable("id") Long id){
         clientService.addToBucket(id);
+        return ResponseEntity.ok("Product added");
     }
 
     @GetMapping("/bucket")
@@ -103,6 +106,36 @@ public class ClientRestController {
         Client client = clientService.findCurrentClient();
         return clientService.getBItemsListOfClient(client);
     }
+
+    @GetMapping("/buy")
+    public ResponseEntity<?> buy(){
+
+        return clientService.buy(clientService.findCurrentClient());
+
+    }
+
+    @GetMapping("/orderdetails")
+    public List<OrderDetails> orderDetails(){
+        return orderDetailsService.findDetailsOfCurrentClient();
+    }
+
+    @GetMapping("/myInfo")
+    public Client clientInfo(){
+        return clientService.findCurrentClient();
+    }
+
+    @PostMapping("/addBalance")
+    public void addBalance(@RequestParam Integer amount){
+        clientService.addBalance(amount);
+
+    }
+    @PostMapping("/changeAddress")
+    public void changeAddress(@RequestParam String address){
+        clientService.setAddress(address);
+
+    }
+
+
 
 
 }
