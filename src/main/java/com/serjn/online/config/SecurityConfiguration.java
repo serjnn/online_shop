@@ -50,7 +50,7 @@ public class SecurityConfiguration {
 
 
 
-                })
+
 
 
                 .csrf(AbstractHttpConfigurer::disable)
