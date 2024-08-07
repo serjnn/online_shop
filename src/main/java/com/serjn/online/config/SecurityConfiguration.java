@@ -28,19 +28,29 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 public class SecurityConfiguration {
     @Autowired
-    JwtAuthenticationFilter jwtAuthFilter;
+    public void setJwtAuthFilter(JwtAuthenticationFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
+    @Autowired
+    public void setClientDetailService(ClientDetailService clientDetailService) {
+        this.clientDetailService = clientDetailService;
+    }
+    @Autowired
+    public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
+        this.authenticationProvider = authenticationProvider;
+    }
 
-    @Autowired
-    ClientDetailService clientDetailService;
-    @Autowired
-    AuthenticationProvider authenticationProvider;
+    private  JwtAuthenticationFilter jwtAuthFilter;
+
+
+    private  ClientDetailService clientDetailService;
+
+    private  AuthenticationProvider authenticationProvider;
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws
-            Exception {
-        return httpSecurity.authorizeHttpRequests(registry ->
-                {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", "/api/register", "/api/auth").permitAll();
                     registry.requestMatchers("/categories").hasRole("client");
 
@@ -49,15 +59,7 @@ public class SecurityConfiguration {
                 })
 
 
-
-
-
-
-                .csrf(AbstractHttpConfigurer::disable)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .build();
+                .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement(session -> session.sessionCreationPolicy(STATELESS)).authenticationProvider(authenticationProvider).build();
 
 
     }
@@ -68,11 +70,7 @@ public class SecurityConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*").allowCredentials(true);
             }
         };
     }

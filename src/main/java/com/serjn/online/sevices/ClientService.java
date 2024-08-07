@@ -25,33 +25,57 @@ import java.util.stream.Collectors;
 @Service
 
 public class ClientService {
+    @Autowired
+    public void setClientRepository(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @Autowired
-    ClientRepository clientRepository;
-    @Autowired
-    ProductService productService;
-    @Autowired
-    OrderDetailsService orderDetailsService;
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    public void setOrderDetailsService(OrderDetailsService orderDetailsService) {
+        this.orderDetailsService = orderDetailsService;
+    }
 
     @Autowired
-    BucketService bucketService;
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Autowired
-    BucketItemsService bucketItemsService;
+    public void setBucketService(BucketService bucketService) {
+        this.bucketService = bucketService;
+    }
+
+    @Autowired
+    public void setBucketItemsService(BucketItemsService bucketItemsService) {
+        this.bucketItemsService = bucketItemsService;
+    }
+
+    private ClientRepository clientRepository;
+
+    private ProductService productService;
+
+    private OrderDetailsService orderDetailsService;
+
+    private PasswordEncoder passwordEncoder;
+
+
+    private BucketService bucketService;
+
+
+    private BucketItemsService bucketItemsService;
 
     public Client finById(Long clientId) {
-        return clientRepository.findById(clientId)
-                .orElseThrow(() ->
-                        new NoSuchElementException("No client with id: " + clientId));
+        return clientRepository.findById(clientId).orElseThrow(() -> new NoSuchElementException("No client with id: " + clientId));
     }
 
 
     public Client findByMail(String mail) {
-        return clientRepository.findByMail(mail).orElseThrow(() ->
-                new NoSuchElementException("No client with mail: " + mail));
+        return clientRepository.findByMail(mail).orElseThrow(() -> new NoSuchElementException("No client with mail: " + mail));
 
     }
 
@@ -97,25 +121,16 @@ public class ClientService {
 
 
         List<BucketItems> bitems = getBItemsListOfClient(client);
-        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() *
-                i.getQuantity()).sum();
+        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
 
 
-        if (client.getBalance() < sum)
-            return new ResponseEntity<>("Not enough money", HttpStatus.BAD_REQUEST);
+        if (client.getBalance() < sum) return new ResponseEntity<>("Not enough money", HttpStatus.BAD_REQUEST);
 
 
-        String strIDS = bitems.stream()
-                .mapToLong(i -> i.getProduct().getId())
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(","));
+        String strIDS = bitems.stream().mapToLong(i -> i.getProduct().getId()).mapToObj(String::valueOf).collect(Collectors.joining(","));
 
 
-        OrderDetails orderDetails = new OrderDetails(
-                client.getId(),
-                strIDS,
-                sum
-        );
+        OrderDetails orderDetails = new OrderDetails(client.getId(), strIDS, sum);
         orderDetailsService.saveOrder(orderDetails);
 
         client.setBalance(client.getBalance() - sum);
@@ -140,10 +155,7 @@ public class ClientService {
     public void register(RegRequest regRequest) {
         Bucket bucket = new Bucket();
 
-        Client client = new Client(regRequest.getMail(),
-                passwordEncoder.encode(regRequest.getPassword()),
-                bucket,
-                regRequest.getRole().toLowerCase());
+        Client client = new Client(regRequest.getMail(), passwordEncoder.encode(regRequest.getPassword()), bucket, regRequest.getRole().toLowerCase());
         bucket.setClient(client);
         save(client);
 
@@ -158,10 +170,7 @@ public class ClientService {
         Client client = findCurrentClient();
         Bucket bucket = bucketService.findBucketByClientId(client.getId());
 
-        Optional<BucketItems> existingBucketItem = bucket.getBucketItems()
-                .stream()
-                .filter(bucketItem -> bucketItem.getProduct().getId() == productId)
-                .findFirst();
+        Optional<BucketItems> existingBucketItem = bucket.getBucketItems().stream().filter(bucketItem -> bucketItem.getProduct().getId() == productId).findFirst();
 
         if (existingBucketItem.isPresent()) {
             BucketItems bucketItems = bucketItemsService.findBucketItemByProductId(productId);
@@ -169,10 +178,7 @@ public class ClientService {
             bucketService.save(bucket);
             return ResponseEntity.ok("Product has added");
         } else {
-            BucketItems bucketItems = new BucketItems(
-                    productService.findById(productId),
-                    bucket,
-                    1);
+            BucketItems bucketItems = new BucketItems(productService.findById(productId), bucket, 1);
 
             bucket.getBucketItems().add(bucketItems);
             bucketService.save(bucket);

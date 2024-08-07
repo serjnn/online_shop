@@ -11,9 +11,18 @@ import org.springframework.stereotype.Service;
 public class BucketService {
 
     @Autowired
-    ClientService clientService;
+    public void setClientService(ClientService clientService) {
+        this.clientService = clientService;
+    }
+
     @Autowired
-    BucketRepository bucketRepository;
+    public void setBucketRepository(BucketRepository bucketRepository) {
+        this.bucketRepository = bucketRepository;
+    }
+
+    private ClientService clientService;
+
+    private BucketRepository bucketRepository;
 
     public Bucket findBucketByClientId(Long clientId) {
 
