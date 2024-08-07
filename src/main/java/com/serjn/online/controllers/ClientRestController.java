@@ -9,7 +9,7 @@ import com.serjn.online.sevices.ClientDetailService;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,34 +23,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
+@RequiredArgsConstructor
 public class ClientRestController {
 
-    @Autowired
-    OrderDetailsService orderDetailsService;
-
-    @Autowired
-    ProductService productService;
-
-    @Autowired
-    ClientService clientService;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    ClientDetailService clientDetailService;
-
-    @Autowired
-    JwtService jwtService;
+    private final OrderDetailsService orderDetailsService;
+    private final ProductService productService;
+    private final ClientService clientService;
+    private final AuthenticationManager authenticationManager;
+    private final ClientDetailService clientDetailService;
+    private final JwtService jwtService;
 
 
     @PostMapping("/register")
     public ResponseEntity<?> reg(@RequestBody RegRequest regRequest) {
 
-        if (regRequest.getMail() == null ||
-                regRequest.getPassword() == null || regRequest.getRole() == null) {
-            return new ResponseEntity<>("Некоторые обязательные поля отсутствуют",
-                    HttpStatus.BAD_REQUEST);
+        if (regRequest.getMail() == null || regRequest.getPassword() == null || regRequest.getRole() == null) {
+            return new ResponseEntity<>("Некоторые обязательные поля отсутствуют", HttpStatus.BAD_REQUEST);
         }
         clientService.register(regRequest);
         return ResponseEntity.ok("Success");
@@ -61,8 +49,7 @@ public class ClientRestController {
     @PostMapping("/auth")
     public ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(),
-                    authRequest.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(), authRequest.getPassword()));
         } catch (BadCredentialsException e) {
 
             return new ResponseEntity<>(new Error(), HttpStatus.UNAUTHORIZED);
@@ -96,46 +83,45 @@ public class ClientRestController {
 
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<String> addToCart(@PathVariable("id") Long id){
+    public ResponseEntity<String> addToCart(@PathVariable("id") Long id) {
         clientService.addToBucket(id);
         return ResponseEntity.ok("Product added");
     }
 
     @GetMapping("/bucket")
-    public List<BucketItems> bucket(){
+    public List<BucketItems> bucket() {
         Client client = clientService.findCurrentClient();
         return clientService.getBItemsListOfClient(client);
     }
 
     @GetMapping("/buy")
-    public ResponseEntity<?> buy(){
+    public ResponseEntity<?> buy() {
 
         return clientService.buy(clientService.findCurrentClient());
 
     }
 
     @GetMapping("/orderdetails")
-    public List<OrderDetails> orderDetails(){
+    public List<OrderDetails> orderDetails() {
         return orderDetailsService.findDetailsOfCurrentClient();
     }
 
     @GetMapping("/myInfo")
-    public Client clientInfo(){
+    public Client clientInfo() {
         return clientService.findCurrentClient();
     }
 
     @PostMapping("/addBalance")
-    public void addBalance(@RequestParam Integer amount){
+    public void addBalance(@RequestParam Integer amount) {
         clientService.addBalance(amount);
 
     }
+
     @PostMapping("/changeAddress")
-    public void changeAddress(@RequestParam String address){
+    public void changeAddress(@RequestParam String address) {
         clientService.setAddress(address);
 
     }
-
-
 
 
 }

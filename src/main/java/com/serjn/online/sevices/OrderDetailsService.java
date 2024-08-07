@@ -10,23 +10,32 @@ import java.util.List;
 
 @Service
 public class OrderDetailsService {
-    @Autowired
-    OrderDetailsRepository orderDetailsRepository;
+
 
     @Autowired
-    ClientService clientService;
+    public void setClientService(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
-    public void saveOrder(OrderDetails orderDetails){
+    @Autowired
+    public void setOrderDetailsRepository(OrderDetailsRepository orderDetailsRepository) {
+        this.orderDetailsRepository = orderDetailsRepository;
+    }
+
+    private ClientService clientService;
+    private OrderDetailsRepository orderDetailsRepository;
+
+    public void saveOrder(OrderDetails orderDetails) {
         orderDetailsRepository.save(orderDetails);
     }
 
 
-
-    public List<OrderDetails> findDetailsOfCurrentClient(){
+    public List<OrderDetails> findDetailsOfCurrentClient() {
         Client client = clientService.findCurrentClient();
         return orderDetailsRepository.findByClientId(client.getId());
 
     }
+
     public void deleteALl() {
         orderDetailsRepository.deleteAll();
     }

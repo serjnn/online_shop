@@ -21,11 +21,19 @@ import java.util.List;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    public void setJwtService(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
 
     @Autowired
-    JwtService jwtService;
-    @Autowired
-    UserDetailsService userDetailsService;
+    public void setUserDetailsService(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
+    private JwtService jwtService;
+
+    private UserDetailsService userDetailsService;
 
 
     @Override
