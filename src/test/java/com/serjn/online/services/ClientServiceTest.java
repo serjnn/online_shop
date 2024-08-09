@@ -7,7 +7,6 @@ import com.serjn.online.models.Client;
 import com.serjn.online.models.Product;
 import com.serjn.online.repositories.ClientRepository;
 import com.serjn.online.sevices.ClientService;
-import com.serjn.online.sevices.OrderDetailsService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,8 +32,7 @@ public class ClientServiceTest {
     @InjectMocks
     private ClientService clientService;
 
-    @Mock
-    private OrderDetailsService orderDetailsService;
+
 
 
 
