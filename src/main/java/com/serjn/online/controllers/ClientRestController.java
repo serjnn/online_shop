@@ -35,7 +35,7 @@ public class ClientRestController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<?> reg(@RequestBody RegRequest regRequest) {
+     ResponseEntity<?> reg(@RequestBody RegRequest regRequest) {
 
         if (regRequest.getMail() == null || regRequest.getPassword() == null || regRequest.getRole() == null) {
             return new ResponseEntity<>("Некоторые обязательные поля отсутствуют", HttpStatus.BAD_REQUEST);
@@ -47,7 +47,7 @@ public class ClientRestController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
+     ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(), authRequest.getPassword()));
         } catch (BadCredentialsException e) {
@@ -61,21 +61,21 @@ public class ClientRestController {
     }
 
     @GetMapping("/clients")
-    public List<Client> clients() {
+     List<Client> clients() {
         return clientService.findAll();
 
 
     }
 
     @GetMapping("/secured")
-    public String secured() {
-        return "SECURED PLACE ";
+     String secured() {
+        return "";
 
     }
 
 
     @GetMapping("/categories/{cat}")
-    public List<Product> bucket(@PathVariable("cat") Category category) {
+     List<Product> bucket(@PathVariable("cat") Category category) {
         return productService.getProductsByCategory(category);
 
 
@@ -83,42 +83,42 @@ public class ClientRestController {
 
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<String> addToCart(@PathVariable("id") Long id) {
+     ResponseEntity<String> addToCart(@PathVariable("id") Long id) {
         clientService.addToBucket(id);
         return ResponseEntity.ok("Product added");
     }
 
     @GetMapping("/bucket")
-    public List<BucketItems> bucket() {
+     List<BucketItems> bucket() {
         Client client = clientService.findCurrentClient();
         return clientService.getBItemsListOfClient(client);
     }
 
     @GetMapping("/buy")
-    public ResponseEntity<?> buy() {
+     ResponseEntity<?> buy() {
 
         return clientService.buy(clientService.findCurrentClient());
 
     }
 
     @GetMapping("/orderdetails")
-    public List<OrderDetails> orderDetails() {
+     List<OrderDetails> orderDetails() {
         return orderDetailsService.findDetailsOfCurrentClient();
     }
 
     @GetMapping("/myInfo")
-    public Client clientInfo() {
+     Client clientInfo() {
         return clientService.findCurrentClient();
     }
 
     @PostMapping("/addBalance")
-    public void addBalance(@RequestParam Integer amount) {
+     void addBalance(@RequestParam Integer amount) {
         clientService.addBalance(amount);
 
     }
 
     @PostMapping("/changeAddress")
-    public void changeAddress(@RequestParam String address) {
+     void changeAddress(@RequestParam String address) {
         clientService.setAddress(address);
 
     }

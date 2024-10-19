@@ -22,12 +22,11 @@ public class ClientDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         Client client = clientService.findByMail(mail);
 
-        UserDetails userDetails = User.builder()
+        return User.builder()
                 .username(client.getMail())
                 .password(client.getPassword())
                 .roles(Roles(client.getRole()))
                 .build();
-        return userDetails;
     }
 
     private String[] Roles(String role) {

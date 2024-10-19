@@ -3,15 +3,16 @@ package com.serjn.online.sevices;
 
 import com.serjn.online.models.BucketItems;
 import com.serjn.online.repositories.BucketItemsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @Service
+@RequiredArgsConstructor
 public class BucketItemsService {
-    @Autowired
-    BucketItemsRepository bucketItemsRepository;
+
+    private final BucketItemsRepository bucketItemsRepository;
 
 
     public BucketItems findBucketItemByProductId(Long productId){
@@ -20,7 +21,4 @@ public class BucketItemsService {
                         productId));
     }
 
-    public void save(BucketItems bucketItems) {
-        bucketItemsRepository.save(bucketItems);
-    }
 }

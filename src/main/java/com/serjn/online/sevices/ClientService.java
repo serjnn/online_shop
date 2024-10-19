@@ -1,7 +1,6 @@
 package com.serjn.online.sevices;
 
 
-import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItems;
@@ -94,9 +93,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public void deleteById(Long id) {
-        clientRepository.deleteById(id);
-    }
+
 
 
     @Transactional
@@ -161,10 +158,7 @@ public class ClientService {
 
     }
 
-    public void auth(AuthRequest authRequest) {
 
-
-    }
 
     public ResponseEntity<String> addToBucket(Long productId) {
         Client client = findCurrentClient();
