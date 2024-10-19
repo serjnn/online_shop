@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+adminpage
+<form action="/deleteUser" method="post">
+
+        <label for="user_id">Выбери бедолагу</label>
+        <select id="user_id" name="user_id" required>
+            <!-- из th:value передается значение в name -->
+
+            <option th:each="human : ${people}" th:value="${human.id}"
+                    th:text="${human.role} +'   ' +
+${human.id} + '   ' + ${human.mail}"></option>
+        </select>
+    </div>
+
+    <button type="submit">Удалить</button>
+</form>
+
+<h1>Накинуть баланса</h1>
+<form action="/addBalance" method="post">
+
+    <label for="clientId">Выбери кому накинуть </label>
+    <select id="clientId" name="clientId" required>
+        <!-- из th:value передается значение в name -->
+
+        <option th:each="human : ${people}" th:value="${human.id}"
+                th:text="${human.role} +'   ' +
+${human.id} + '   ' + ${human.mail}"></option>
+    </select>
+    </div>
+    <div>
+        <label for="amount">amount:</label>
+        <input type="text" id="amount" name="amount">
+    </div>
+    <button type="submit">Добавить денег</button>
+</form>
+<button  ><a href="/">Вернуться назад</a></button>
+
+</body>
+</html>

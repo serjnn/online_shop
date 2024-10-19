@@ -2,11 +2,11 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.AuthRequest;
-import com.serjn.online.DTOs.DetailsBody;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItems;
 import com.serjn.online.models.Client;
+import com.serjn.online.models.OrderDetails;
 import com.serjn.online.repositories.ClientRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 
 public class ClientService {
-
-
-    @Autowired
-    public void setDiscountChecker(DiscountChecker discountChecker) {
-        this.discountChecker = discountChecker;
-    }
-
     @Autowired
     public void setClientRepository(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
@@ -43,8 +36,8 @@ public class ClientService {
     }
 
     @Autowired
-    public void setOrderDetailsManager(OrderDetailsManager orderDetailsManager) {
-        this.orderDetailsManager = orderDetailsManager;
+    public void setOrderDetailsService(OrderDetailsService orderDetailsService) {
+        this.orderDetailsService = orderDetailsService;
     }
 
     @Autowired
@@ -62,11 +55,11 @@ public class ClientService {
         this.bucketItemsService = bucketItemsService;
     }
 
-    private DiscountChecker discountChecker;
-    private OrderDetailsManager orderDetailsManager;
     private ClientRepository clientRepository;
 
     private ProductService productService;
+
+    private OrderDetailsService orderDetailsService;
 
     private PasswordEncoder passwordEncoder;
 
@@ -107,7 +100,8 @@ public class ClientService {
 
 
     @Transactional
-    public List<BucketItems> getBucketItems(Bucket bucket) {
+    public List<BucketItems> getBItemsListOfClient(Client client) {
+        Bucket bucket = client.getBucket();
         return bucket.getBucketItems();
 
 
@@ -125,47 +119,29 @@ public class ClientService {
         if (client.getAddress() == null)
             return new ResponseEntity<>("Please enter ur address.", HttpStatus.BAD_REQUEST);
 
-        Bucket bucket = client.getBucket();
-        int sum = getSum(bucket);
-        DetailsBody detailsBody = new DetailsBody(client.getId(), getIDS(bucket), sum);
-        orderDetailsManager.sendOrderDetails(detailsBody);
+
+        List<BucketItems> bitems = getBItemsListOfClient(client);
+        int sum = bitems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
 
 
         if (client.getBalance() < sum) return new ResponseEntity<>("Not enough money", HttpStatus.BAD_REQUEST);
-        //TODO make own exception class with @ResponseStatus and use it
+
+
+        String strIDS = bitems.stream().mapToLong(i -> i.getProduct().getId()).mapToObj(String::valueOf).collect(Collectors.joining(","));
+
+
+        OrderDetails orderDetails = new OrderDetails(client.getId(), strIDS, sum);
+        orderDetailsService.saveOrder(orderDetails);
 
         client.setBalance(client.getBalance() - sum);
-        bucket.getBucketItems().clear();
+        Bucket bucket = client.getBucket();
+        List<BucketItems> list = bucket.getBucketItems();
+        list.clear();
+
         save(client);
 
-        return ResponseEntity.ok(detailsBody);
 
-    }
-
-
-    private String getIDS(Bucket bucket) {
-        StringBuilder sb = new StringBuilder();
-        for (BucketItems item : bucket.getBucketItems()) {
-            sb.append(item.getProduct().getName()).append(":").append(item.getQuantity()).append("|");
-        }
-        return sb.toString();
-    }
-
-    public int getSum(Bucket bucket) {
-
-        List<BucketItems> bitems = getBucketItems(bucket);
-        Map<String, Integer> discounts = discountChecker.getDiscountList();
-        int sum = 0;
-        for (BucketItems item : bitems) {
-            String cat = item.getProduct().getCategory().toString();
-            if (discounts.containsKey(cat)) {
-                double percent = (double) discounts.get(cat) / 100;
-                sum += (int) Math.floor((item.getProduct().getPrice() * (1 - percent)) * item.getQuantity());
-            } else {
-                sum += item.getProduct().getPrice() * item.getQuantity();
-            }
-        }
-        return sum;
+        return ResponseEntity.ok(orderDetails);
 
     }
 
@@ -192,7 +168,7 @@ public class ClientService {
 
     public ResponseEntity<String> addToBucket(Long productId) {
         Client client = findCurrentClient();
-        Bucket bucket = client.getBucket();
+        Bucket bucket = bucketService.findBucketByClientId(client.getId());
 
         Optional<BucketItems> existingBucketItem = bucket.getBucketItems().stream().filter(bucketItem -> bucketItem.getProduct().getId() == productId).findFirst();
 
@@ -205,28 +181,10 @@ public class ClientService {
             BucketItems bucketItems = new BucketItems(productService.findById(productId), bucket, 1);
 
             bucket.getBucketItems().add(bucketItems);
-
             bucketService.save(bucket);
             return ResponseEntity.ok("Product has added");
 
         }
-
-    }
-
-    public ResponseEntity<String> reduceProductInCart(Long id) {
-        System.out.println("______________________________________");
-        System.out.println(id);
-        Client client = findCurrentClient();
-        Bucket bucket = client.getBucket();
-        List<BucketItems> list = getBucketItems(bucket);
-        BucketItems item = list.stream().filter(i -> i.getProduct().getId() == id).findFirst().orElse(null);
-        if (item == null) return new ResponseEntity<>("No such item", HttpStatus.BAD_REQUEST);
-        item.setQuantity(item.getQuantity()-1);
-
-        bucketItemsService.save(item);
-        bucketService.save(bucket);
-        return new ResponseEntity<>("Item decreased", HttpStatus.ACCEPTED);
-
 
     }
 }

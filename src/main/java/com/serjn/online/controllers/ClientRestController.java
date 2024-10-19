@@ -2,11 +2,13 @@ package com.serjn.online.controllers;
 
 
 import com.serjn.online.DTOs.AuthRequest;
-import com.serjn.online.DTOs.OrderDetailsResponse;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.JWT.JwtService;
 import com.serjn.online.models.*;
-import com.serjn.online.sevices.*;
+import com.serjn.online.sevices.ClientDetailService;
+import com.serjn.online.sevices.ClientService;
+import com.serjn.online.sevices.OrderDetailsService;
+import com.serjn.online.sevices.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +19,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @RestController
 @RequestMapping("/api/")
 @RequiredArgsConstructor
 public class ClientRestController {
-    private final OrderDetailsManager orderDetailsManager;
+
+    private final OrderDetailsService orderDetailsService;
     private final ProductService productService;
     private final ClientService clientService;
     private final AuthenticationManager authenticationManager;
     private final ClientDetailService clientDetailService;
     private final JwtService jwtService;
-    private final DiscountChecker discountChecker;
 
 
     @PostMapping("/register")
@@ -40,7 +41,7 @@ public class ClientRestController {
             return new ResponseEntity<>("Некоторые обязательные поля отсутствуют", HttpStatus.BAD_REQUEST);
         }
         clientService.register(regRequest);
-        return ResponseEntity.ok("registered");
+        return ResponseEntity.ok("Success");
 
 
     }
@@ -79,11 +80,6 @@ public class ClientRestController {
 
 
     }
-    @GetMapping("/remove/{id}")
-    public ResponseEntity<String> removeFromCart(@PathVariable("id") Long id) {
-
-        return clientService.reduceProductInCart(id);
-    }
 
 
     @GetMapping("/products/{id}")
@@ -95,8 +91,7 @@ public class ClientRestController {
     @GetMapping("/bucket")
     public List<BucketItems> bucket() {
         Client client = clientService.findCurrentClient();
-        Bucket bucket = client.getBucket();
-        return clientService.getBucketItems(bucket);
+        return clientService.getBItemsListOfClient(client);
     }
 
     @GetMapping("/buy")
@@ -106,6 +101,10 @@ public class ClientRestController {
 
     }
 
+    @GetMapping("/orderdetails")
+    public List<OrderDetails> orderDetails() {
+        return orderDetailsService.findDetailsOfCurrentClient();
+    }
 
     @GetMapping("/myInfo")
     public Client clientInfo() {
@@ -123,28 +122,6 @@ public class ClientRestController {
         clientService.setAddress(address);
 
     }
-
-    @GetMapping("/discount")
-    Map<String,Integer> disc(){
-        return discountChecker.getDiscountList();
-    }
-
-    @GetMapping("/sum")
-    int sum (){
-        return clientService.getSum(clientService.findCurrentClient().getBucket());
-    }
-
-     @GetMapping("/orders")
-    List<OrderDetailsResponse> orders(){
-        Long clientId = clientService.findCurrentClient().getId();
-        return orderDetailsManager.getOrderDetails(clientId);
-
-
-     }
-
-
-
-
 
 
 }

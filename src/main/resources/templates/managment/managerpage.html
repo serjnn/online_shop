@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Менеджерская страница</title>
+</head>
+<body>
+
+<h1>Добавить продукт</h1>
+<form action="/addprod" method="post">
+    <div>
+        <label for="name">name:</label>
+        <input type="text" id = "name" name="name">
+    </div>
+    <div>
+        <label for="description">Description:</label>
+        <input type="text" id = "description" name = "description">
+    </div>
+    <div>
+        <label for="price">price:</label>
+        <input type="text" id = "price" name = "price">
+    </div>
+    <div>
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"></option>
+        </select>
+    </div>
+
+    <button type="submit">Добавить</button>
+</form>
+<button  ><a href="/">Вернуться назад</a></button>
+
+</body>
+</html>
