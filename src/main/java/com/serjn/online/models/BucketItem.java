@@ -12,11 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "bucketItems")
-public class BucketItems {
+public class BucketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
 
     @OneToOne
     @JoinColumn(name = "product_id")
@@ -28,7 +27,7 @@ public class BucketItems {
 
     private int quantity;
 
-    public BucketItems(Product product, Bucket bucket, int quantity) {
+    public BucketItem(Product product, Bucket bucket, int quantity) {
         this.product = product;
         this.bucket = bucket;
         this.quantity = quantity;

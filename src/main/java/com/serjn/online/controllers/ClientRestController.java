@@ -5,10 +5,8 @@ import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.JWT.JwtService;
 import com.serjn.online.models.*;
-import com.serjn.online.sevices.ClientDetailService;
-import com.serjn.online.sevices.ClientService;
-import com.serjn.online.sevices.OrderDetailsService;
-import com.serjn.online.sevices.ProductService;
+import com.serjn.online.sevices.*;
+import com.serjn.online.sevices.utils.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,27 +30,22 @@ public class ClientRestController {
     private final AuthenticationManager authenticationManager;
     private final ClientDetailService clientDetailService;
     private final JwtService jwtService;
+    private final PurchaseService purchaseService;
+    private final BucketService bucketService;
 
 
     @PostMapping("/register")
-     ResponseEntity<?> reg(@RequestBody RegRequest regRequest) {
-
-        if (regRequest.getMail() == null || regRequest.getPassword() == null || regRequest.getRole() == null) {
-            return new ResponseEntity<>("Некоторые обязательные поля отсутствуют", HttpStatus.BAD_REQUEST);
-        }
-        clientService.register(regRequest);
-        return ResponseEntity.ok("Success");
-
-
+     ResponseEntity<HttpStatus> reg(@RequestBody RegRequest regRequest) {
+        return clientService.register(regRequest);
     }
-
+//TODO
     @PostMapping("/auth")
      ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getMail(), authRequest.getPassword()));
         } catch (BadCredentialsException e) {
 
-            return new ResponseEntity<>(new Error(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
 
@@ -75,51 +68,48 @@ public class ClientRestController {
 
 
     @GetMapping("/categories/{cat}")
-     List<Product> bucket(@PathVariable("cat") Category category) {
+     List<Product> getProductsByCategory(@PathVariable("cat") Category category) {
         return productService.getProductsByCategory(category);
 
 
     }
 
 
-    @GetMapping("/products/{id}")
-     ResponseEntity<String> addToCart(@PathVariable("id") Long id) {
-        clientService.addToBucket(id);
-        return ResponseEntity.ok("Product added");
+    @GetMapping("/products/{productId}")
+     ResponseEntity<HttpStatus> addToCart(@PathVariable("productId") Long productId) {
+        return bucketService.addToBucket(productId);
+
     }
 
     @GetMapping("/bucket")
-     List<BucketItems> bucket() {
-        Client client = clientService.findCurrentClient();
-        return clientService.getBItemsListOfClient(client);
+     List<BucketItem> getBucketItems(@RequestParam("clientId") Long clientId) {
+        return purchaseService.getBucketItemsListOfClient(clientId);
     }
-
     @GetMapping("/buy")
-     ResponseEntity<?> buy() {
-
-        return clientService.buy(clientService.findCurrentClient());
+     ResponseEntity<?> buy(@RequestParam("clientId") Long clientId) {
+        return purchaseService.buy(clientId);
 
     }
 
-    @GetMapping("/orderdetails")
-     List<OrderDetails> orderDetails() {
-        return orderDetailsService.findDetailsOfCurrentClient();
+    @GetMapping("/getClientsOrderDetails/{clientId}") //changed
+     List<OrderDetails> getClientsOrderDetails(@PathVariable("clientId") Long clientId) {
+        return orderDetailsService.findOrderDetailsByClientId(clientId);
     }
 
-    @GetMapping("/myInfo")
-     Client clientInfo() {
-        return clientService.findCurrentClient();
+    @GetMapping("/getClientInfo") //changed
+     Client clientInfo(@RequestParam("clientId") Long clientId) {
+        return clientService.finById(clientId);
     }
 
     @PostMapping("/addBalance")
-     void addBalance(@RequestParam Integer amount) {
-        clientService.addBalance(amount);
+     ResponseEntity<HttpStatus> addBalance(@RequestParam Integer amount) {
+        return clientService.addBalance(amount);
 
     }
 
     @PostMapping("/changeAddress")
-     void changeAddress(@RequestParam String address) {
-        clientService.setAddress(address);
+    ResponseEntity<HttpStatus> changeAddress(@RequestParam String address) {
+       return  clientService.setAddress(address);
 
     }
 

@@ -3,7 +3,8 @@ package com.serjn.online.config;
 
 import com.serjn.online.JWT.JwtAuthenticationFilter;
 import com.serjn.online.sevices.ClientDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,27 +26,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
-
+@RequiredArgsConstructor
 public class SecurityConfiguration {
-    @Autowired
-    public void setJwtAuthFilter(JwtAuthenticationFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
-    @Autowired
-    public void setClientDetailService(ClientDetailService clientDetailService) {
-        this.clientDetailService = clientDetailService;
-    }
-    @Autowired
-    public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
-    }
 
-    private  JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
+    private final ClientDetailService clientDetailService;
 
-    private  ClientDetailService clientDetailService;
-
-    private  AuthenticationProvider authenticationProvider;
 
 
     @Bean
@@ -59,7 +46,11 @@ public class SecurityConfiguration {
                 })
 
 
-                .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement(session -> session.sessionCreationPolicy(STATELESS)).authenticationProvider(authenticationProvider).build();
+                .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .build();
 
 
     }
@@ -69,7 +60,7 @@ public class SecurityConfiguration {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*").allowCredentials(true);
             }
         };

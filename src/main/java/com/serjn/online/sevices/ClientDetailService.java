@@ -1,26 +1,28 @@
 package com.serjn.online.sevices;
 
 import com.serjn.online.models.Client;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.serjn.online.repositories.ClientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 
 @Service
+@RequiredArgsConstructor
 public class ClientDetailService implements UserDetailsService {
-    @Autowired
-    public void setClientService(ClientService clientService) {
-        this.clientService = clientService;
-    }
 
-    private ClientService clientService;
+    private final ClientRepository clientRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
-        Client client = clientService.findByMail(mail);
+        Client client = clientRepository.findByMail(mail).orElseThrow(() ->
+                new NoSuchElementException("No client with mail: " + mail));
 
         return User.builder()
                 .username(client.getMail())
@@ -30,16 +32,11 @@ public class ClientDetailService implements UserDetailsService {
     }
 
     private String[] Roles(String role) {
-        switch (role) {
-            case "client":
-                return new String[]{"client"};
-            case "manager":
-                return new String[]{"manager", "client"};
-            case "admin":
-                return new String[]{"admin", "manager", "client"};
-            default:
-                throw new IllegalArgumentException("Unknown role: " + role);
-
-        }
+        return switch (role) {
+            case "client" -> new String[]{"client"};
+            case "manager" -> new String[]{"manager", "client"};
+            case "admin" -> new String[]{"admin", "manager", "client"};
+            default -> throw new IllegalArgumentException("Unknown role: " + role);
+        };
     }
 }

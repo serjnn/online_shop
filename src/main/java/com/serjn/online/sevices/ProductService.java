@@ -23,7 +23,8 @@ public class ProductService {
 
 
     public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("No product with id: " + id));
+        return productRepository.findById(id).orElseThrow(()
+                -> new NoSuchElementException("No product with id: " + id));
     }
 
 
