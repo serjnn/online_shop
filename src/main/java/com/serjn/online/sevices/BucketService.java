@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class BucketService {
@@ -42,25 +40,48 @@ public class BucketService {
         Client client = clientService.findCurrentClient();
         Bucket bucket = findBucketByClientId(client.getId());
 
-        Optional<BucketItem> existingBucketItem = bucket
-                .getBucketItems()
-                .stream()
-                .filter(bucketItem -> bucketItem.getProduct().getId() == productId)
-                .findFirst();
+        BucketItem existingBucketItem = getExistingBucketItem(bucket, productId);
 
         BucketItem bucketItem;
-        if (existingBucketItem.isPresent()) {
+        if (existingBucketItem != null) {
             bucketItem = bucketItemRepository.findBucketItemByProductId(productId).orElseThrow();
             bucketItem.setQuantity(bucketItem.getQuantity() + 1);
         } else {
             bucketItem = new BucketItem(productService.findById(productId), bucket, 1);
-
             bucket.getBucketItems().add(bucketItem);
-
         }
         save(bucket);
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+
+
+    public ResponseEntity<HttpStatus> removeFromBucket(Long productId) {
+        Client client = clientService.findCurrentClient();
+        Bucket bucket = findBucketByClientId(client.getId());
+        BucketItem existingBucketItem =  getExistingBucketItem(bucket, productId);
+
+        if (existingBucketItem == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (existingBucketItem.getQuantity() > 0) {
+            existingBucketItem.setQuantity(existingBucketItem.getQuantity() - 1);
+        } else {
+            bucket.getBucketItems().remove(existingBucketItem);
+        }
+        save(bucket);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    private BucketItem getExistingBucketItem(Bucket bucket, Long productId) {
+        return bucket
+                .getBucketItems()
+                .stream()
+                .filter(bucketItem -> bucketItem.getProduct().getId() == productId)
+                .findFirst()
+                .orElse(null);
     }
 
     public void save(Bucket bucket) {

@@ -10,8 +10,6 @@ public class OnlineApplication {
 		SpringApplication.run(OnlineApplication.class, args);
 	}
 	//TODO what should i return in endpoints like responseEntity or what
-	//TODO current client or send client id
-	//TODO
 
 }
 

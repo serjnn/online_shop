@@ -45,7 +45,7 @@ public class ClientServiceTest {
         when(clientRepository.save(any(Client.class))).thenReturn(client);
 
 
-        purchaseService.buy(client.getId());
+        purchaseService.buy();
 
         Assertions.assertTrue(client.getBucket().getBucketItems().isEmpty());
 

@@ -25,10 +25,10 @@ public class PurchaseService {
     private final OrderDetailsService orderDetailsService;
 
     @Transactional
-    public ResponseEntity<?> buy(Long clientId) {
+    public ResponseEntity<?> buy() {
 
-        Client client = clientService.finById(clientId);
-        List<BucketItem> bucketItems = getBucketItemsListOfClient(client.getId());
+        Client client = clientService.findCurrentClient();
+        List<BucketItem> bucketItems = getBucketItemsListOfClient();
 
         int sum = getSumOfBucket(bucketItems);
 
@@ -49,8 +49,8 @@ public class PurchaseService {
 
     }
     @Transactional
-    public List<BucketItem> getBucketItemsListOfClient(Long clientId) {
-        Bucket bucket = clientService.finById(clientId).getBucket();
+    public List<BucketItem> getBucketItemsListOfClient() {
+        Bucket bucket = clientService.findCurrentClient().getBucket();
         return bucket.getBucketItems();
 
     }
