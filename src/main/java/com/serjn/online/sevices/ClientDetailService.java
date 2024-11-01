@@ -18,7 +18,6 @@ public class ClientDetailService implements UserDetailsService {
 
     private final ClientRepository clientRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         Client client = clientRepository.findByMail(mail).orElseThrow(() ->
@@ -27,16 +26,9 @@ public class ClientDetailService implements UserDetailsService {
         return User.builder()
                 .username(client.getMail())
                 .password(client.getPassword())
-                .roles(Roles(client.getRole()))
+                .roles(client.getRole())
                 .build();
     }
 
-    private String[] Roles(String role) {
-        return switch (role) {
-            case "client" -> new String[]{"client"};
-            case "manager" -> new String[]{"manager", "client"};
-            case "admin" -> new String[]{"admin", "manager", "client"};
-            default -> throw new IllegalArgumentException("Unknown role: " + role);
-        };
-    }
+
 }

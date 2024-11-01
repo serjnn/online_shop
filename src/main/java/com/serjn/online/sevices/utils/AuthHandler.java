@@ -46,7 +46,9 @@ public class AuthHandler {
     }
 
     public ResponseEntity<HttpStatus> register(RegRequest regRequest) {
-        if (regRequest.getMail() == null || regRequest.getPassword() == null) {
+        if (regRequest.getMail() == null || regRequest.getPassword() == null || !regRequest.getPassword().equals(
+                regRequest.getRepeatPassword()
+        )) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -56,7 +58,7 @@ public class AuthHandler {
                 regRequest.getMail(),
                 passwordEncoder.encode(regRequest.getPassword()),
                 bucket,
-                regRequest.getRole().toLowerCase()
+                "client"
         );
         bucket.setClient(client);
         clientService.save(client);

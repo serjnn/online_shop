@@ -27,5 +27,9 @@ public class ProductService {
                 -> new NoSuchElementException("No product with id: " + id));
     }
 
+    public void save(Product product){
+        productRepository.save(product);
+    }
+
 
 }

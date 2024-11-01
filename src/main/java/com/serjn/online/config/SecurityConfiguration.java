@@ -38,11 +38,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/api/register", "/api/auth").permitAll();
-                    registry.requestMatchers("/categories").hasRole("client");
+                    registry.requestMatchers("/", "/api/v1/register", "/api/v1/auth").permitAll();
+                    registry.anyRequest().hasRole("client");
 
-                    registry.requestMatchers("/adminpage", "/api/secured").hasRole("admin");
-                    registry.anyRequest().permitAll();
                 })
 
 
