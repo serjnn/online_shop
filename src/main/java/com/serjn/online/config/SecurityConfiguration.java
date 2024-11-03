@@ -3,7 +3,8 @@ package com.serjn.online.config;
 
 import com.serjn.online.JWT.JwtAuthenticationFilter;
 import com.serjn.online.sevices.ClientDetailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,41 +26,29 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
-
+@RequiredArgsConstructor
 public class SecurityConfiguration {
-    @Autowired
-    public void setJwtAuthFilter(JwtAuthenticationFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
-    @Autowired
-    public void setClientDetailService(ClientDetailService clientDetailService) {
-        this.clientDetailService = clientDetailService;
-    }
-    @Autowired
-    public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
-        this.authenticationProvider = authenticationProvider;
-    }
 
-    private  JwtAuthenticationFilter jwtAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
+    private final ClientDetailService clientDetailService;
 
-    private  ClientDetailService clientDetailService;
-
-    private  AuthenticationProvider authenticationProvider;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/api/register", "/api/auth").permitAll();
-                    registry.requestMatchers("/categories").hasRole("client");
+                    registry.requestMatchers("/", "/api/v1/register", "/api/v1/auth").permitAll();
+                    registry.anyRequest().hasRole("client");
 
-                    registry.requestMatchers("/adminpage", "/api/secured").hasRole("admin");
-                    registry.anyRequest().permitAll();
                 })
 
 
-                .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).sessionManagement(session -> session.sessionCreationPolicy(STATELESS)).authenticationProvider(authenticationProvider).build();
+                .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .build();
 
 
     }
@@ -69,7 +58,7 @@ public class SecurityConfiguration {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*").allowCredentials(true);
             }
         };

@@ -1,11 +1,11 @@
 package com.serjn.online.DTOs;
 
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class RegRequest {
     private String mail;
     private String password;
-    private String role;
+    private String repeatPassword;
 }

@@ -2,12 +2,12 @@ package com.serjn.online.services;
 
 
 import com.serjn.online.models.Bucket;
-import com.serjn.online.models.BucketItems;
+import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.Product;
 import com.serjn.online.repositories.ClientRepository;
-import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
+import com.serjn.online.sevices.utils.PurchaseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
@@ -31,12 +30,10 @@ public class ClientServiceTest {
     private ClientRepository clientRepository;
 
     @InjectMocks
-    private ClientService clientService;
+    private PurchaseService purchaseService;
 
     @Mock
     private OrderDetailsService orderDetailsService;
-
-
 
 
     @Test
@@ -48,7 +45,7 @@ public class ClientServiceTest {
         when(clientRepository.save(any(Client.class))).thenReturn(client);
 
 
-        clientService.buy(client);
+        purchaseService.buy();
 
         Assertions.assertTrue(client.getBucket().getBucketItems().isEmpty());
 
@@ -56,7 +53,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void mailMatch(){
+    public void mailMatch() {
         Client client = createClient();
         Assertions.assertEquals("mail@mail.com", client.getMail());
 
@@ -65,7 +62,7 @@ public class ClientServiceTest {
 
     private Client createClient() {
         Client client = new Client();
-       client.setMail("mail@mail.com");
+        client.setMail("mail@mail.com");
         client.setBalance(1000);
         client.setAddress("123 Main St");
         return client;
@@ -82,15 +79,15 @@ public class ClientServiceTest {
         product2.setId(2L);
         product2.setPrice(200);
 
-        BucketItems bucketItems1 = new BucketItems();
+        BucketItem bucketItems1 = new BucketItem();
         bucketItems1.setQuantity(1);
         bucketItems1.setProduct(product1);
 
-        BucketItems bucketItems2 = new BucketItems();
+        BucketItem bucketItems2 = new BucketItem();
         bucketItems2.setQuantity(3);
         bucketItems2.setProduct(product2);
 
-        List<BucketItems> bucketItemsList = new ArrayList<>();
+        List<BucketItem> bucketItemsList = new ArrayList<>();
         bucketItemsList.add(bucketItems1);
         bucketItemsList.add(bucketItems2);
 

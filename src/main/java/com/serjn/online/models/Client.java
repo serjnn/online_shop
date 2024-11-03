@@ -36,7 +36,7 @@ public class Client {
 
 
 
-    private int balance = 0;
+    private Integer balance = 0;
 
     public Client(String mail, String password, Bucket bucket, String role) {
         this.mail = mail;

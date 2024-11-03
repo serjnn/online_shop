@@ -25,7 +25,9 @@ public class Bucket {
     private Client client;
 
     @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<BucketItems> bucketItems;
+    private List<BucketItem> bucketItems;
 
-
+    public Bucket(Client client) {
+        this.client = client;
+    }
 }
