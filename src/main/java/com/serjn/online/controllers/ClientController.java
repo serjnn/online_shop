@@ -2,9 +2,9 @@ package com.serjn.online.controllers;
 
 
 import com.serjn.online.DTOs.AuthRequest;
+import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ClientService;
@@ -33,7 +33,7 @@ public class ClientController {
         return authHandler.register(regRequest);
     }
 
-    //TODO
+
     @PostMapping("/auth")
     ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
         return authHandler.auth(authRequest);
@@ -51,15 +51,15 @@ public class ClientController {
     }
 
     @GetMapping("/orderDetails/{clientId}")
-        //changed
-    List<OrderDetails> getClientsOrderDetails(@PathVariable("clientId") Long clientId) {
-        return orderDetailsService.findOrderDetailsByClientId(clientId);
+    List<OrderDetails> getClientsOrderDetails() {
+        return orderDetailsService.findClientsOrderDetails(
+                clientService.findCurrentClient().getId()
+        );
     }
 
     @GetMapping("/clientInfo")
-        //changed
-    Client clientInfo() {
-        return clientService.findCurrentClient();
+    ClientDto clientInfo() {
+        return clientService.getTransferClient();
     }
 
     @PostMapping("/addBalance")

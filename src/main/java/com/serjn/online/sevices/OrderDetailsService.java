@@ -1,5 +1,6 @@
 package com.serjn.online.sevices;
 
+
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.repositories.OrderDetailsRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,8 @@ public class OrderDetailsService {
     }
 
 
-    public List<OrderDetails> findOrderDetailsByClientId(Long clientId) {
+    public List<OrderDetails> findClientsOrderDetails(Long clientId) {
+
         return orderDetailsRepository.findByClientId(clientId);
 
     }

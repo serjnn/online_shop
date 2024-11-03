@@ -1,6 +1,7 @@
 package com.serjn.online.sevices;
 
 
+import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.models.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
 
 
-    public Client finById(Long clientId) {
-        return clientRepository.findById(clientId).orElseThrow(() -> new NoSuchElementException("No client with id: " + clientId));
-    }
+
 
 
     public Client findByMail(String mail) {
@@ -65,4 +64,12 @@ public class ClientService {
     }
 
 
+    public ClientDto getTransferClient() {
+        Client client = findCurrentClient();
+        return new ClientDto(client.getId()
+                , client.getMail(),
+                client.getAddress(),
+                client.getBalance());
+
+    }
 }
