@@ -2,6 +2,7 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.ClientDto;
+import com.serjn.online.exceptions.InvalidAddressException;
 import com.serjn.online.models.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 
 @Service
@@ -45,21 +47,27 @@ public class ClientService {
     }
 
 
-    public ResponseEntity<HttpStatus> addBalance(int balance) {
+    public ResponseEntity<HttpStatus> addBalance(BigDecimal balance) {
         Client client = findCurrentClient();
-        client.setBalance(client.getBalance() + balance);
+        client.setBalance(client.getBalance().add(balance));
         save(client);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    public ResponseEntity<HttpStatus> setAddress(String address) {
-        //TODO address validation
+    public void setAddress(String address) {
+        if (!isValidAddress(address)) {
+            throw new InvalidAddressException();
+        }
 
         Client client = findCurrentClient();
         client.setAddress(address);
         save(client);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    private boolean isValidAddress(String address) {
+        return address.length() > 5 && address.contains(" ");
 
     }
 

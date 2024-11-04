@@ -4,6 +4,10 @@ package com.serjn.online.controllers;
 import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.DTOs.RegRequest;
+import com.serjn.online.exceptions.AuthFailedException;
+import com.serjn.online.exceptions.EmptyAddressException;
+import com.serjn.online.exceptions.InsufficientFundsException;
+import com.serjn.online.exceptions.InvalidAddressException;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.sevices.BucketService;
@@ -16,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -29,14 +34,24 @@ public class ClientController {
     private final AuthHandler authHandler;
 
     @PostMapping("/register")
-    ResponseEntity<HttpStatus> reg(@RequestBody RegRequest regRequest) {
-        return authHandler.register(regRequest);
+    ResponseEntity<String> reg(@RequestBody RegRequest regRequest) {
+        try {
+            authHandler.register(regRequest);
+        } catch (AuthFailedException e) {
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("Register failed");
+        }
+        return null;
     }
 
 
     @PostMapping("/auth")
-    ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
-        return authHandler.auth(authRequest);
+    ResponseEntity<String> auth(@RequestBody AuthRequest authRequest) {
+        try {
+             authHandler.auth(authRequest);
+        } catch (AuthFailedException e) {
+            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("Auth failed");
+        }
+        return null;
     }
 
     @GetMapping("/bucketItems")
@@ -44,9 +59,18 @@ public class ClientController {
         return purchaseService.getBucketItemsListOfClient();
     }
 
-    @GetMapping("/buy")
-    ResponseEntity<?> buy() {
-        return purchaseService.buy();
+    @GetMapping("/purchase")
+    ResponseEntity<String> purchase() {
+        try {
+            purchaseService.purchase();
+        } catch (EmptyAddressException e) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty address");
+        }
+        catch (InsufficientFundsException e) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough money");
+
+        }
+        return null;
 
     }
 
@@ -63,15 +87,19 @@ public class ClientController {
     }
 
     @PostMapping("/addBalance")
-    ResponseEntity<HttpStatus> addBalance(@RequestParam Integer amount) {
+    ResponseEntity<HttpStatus> addBalance(@RequestParam BigDecimal amount) {
         return clientService.addBalance(amount);
 
     }
 
     @PostMapping("/changeAddress")
-    ResponseEntity<HttpStatus> changeAddress(@RequestParam String address) {
-        return clientService.setAddress(address);
-
+    ResponseEntity<String> changeAddress(@RequestParam String address) {
+        try {
+            clientService.setAddress(address);
+        } catch (InvalidAddressException e) {
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid address");
+        }
+        return null;
     }
 
     @GetMapping("/addProduct/{productId}")

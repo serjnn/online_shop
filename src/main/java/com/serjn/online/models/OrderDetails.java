@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,12 +20,12 @@ public class OrderDetails {
 
     private Long clientId;
     private String products_ids;
-    private int sum;
+    private BigDecimal sum;
 
     private LocalDateTime created_at;
 
 
-    public OrderDetails(Long clientId, String products_ids, int sum) {
+    public OrderDetails(Long clientId, String products_ids, BigDecimal sum) {
         this.clientId = clientId;
         this.products_ids = products_ids;
         this.sum = sum;

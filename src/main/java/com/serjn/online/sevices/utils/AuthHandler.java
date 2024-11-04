@@ -4,12 +4,12 @@ package com.serjn.online.sevices.utils;
 import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.RegRequest;
 import com.serjn.online.JWT.JwtService;
+import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.Client;
 import com.serjn.online.sevices.ClientDetailService;
 import com.serjn.online.sevices.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,7 +29,7 @@ public class AuthHandler {
     private final ClientService clientService;
 
 
-    public ResponseEntity<?> auth(@RequestBody AuthRequest authRequest) {
+    public void auth(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authRequest.getMail(),
@@ -37,19 +37,19 @@ public class AuthHandler {
             );
         } catch (BadCredentialsException e) {
 
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new AuthFailedException();
         }
         UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
 
         String token = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(token);
+        ResponseEntity.ok(token);
     }
 
-    public ResponseEntity<HttpStatus> register(RegRequest regRequest) {
+    public void register(RegRequest regRequest) {
         if (regRequest.getMail() == null || regRequest.getPassword() == null || !regRequest.getPassword().equals(
                 regRequest.getRepeatPassword()
         )) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            throw new AuthFailedException();
         }
 
         Bucket bucket = new Bucket();
@@ -62,7 +62,6 @@ public class AuthHandler {
         );
         bucket.setClient(client);
         clientService.save(client);
-        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
