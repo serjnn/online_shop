@@ -38,7 +38,7 @@ public class ClientController {
         try {
             authHandler.register(regRequest);
         } catch (AuthFailedException e) {
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("Register failed");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Register failed");
         }
         return null;
     }
@@ -47,9 +47,9 @@ public class ClientController {
     @PostMapping("/auth")
     ResponseEntity<String> auth(@RequestBody AuthRequest authRequest) {
         try {
-             authHandler.auth(authRequest);
+            authHandler.auth(authRequest);
         } catch (AuthFailedException e) {
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).body("Auth failed");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Auth failed");
         }
         return null;
     }
@@ -64,10 +64,9 @@ public class ClientController {
         try {
             purchaseService.purchase();
         } catch (EmptyAddressException e) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty address");
-        }
-        catch (InsufficientFundsException e) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough money");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty address");
+        } catch (InsufficientFundsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough money");
 
         }
         return null;
@@ -76,9 +75,7 @@ public class ClientController {
 
     @GetMapping("/orderDetails/{clientId}")
     List<OrderDetails> getClientsOrderDetails() {
-        return orderDetailsService.findClientsOrderDetails(
-                clientService.findCurrentClient().getId()
-        );
+        return orderDetailsService.findClientsOrderDetails();
     }
 
     @GetMapping("/clientInfo")
@@ -97,7 +94,7 @@ public class ClientController {
         try {
             clientService.setAddress(address);
         } catch (InvalidAddressException e) {
-            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid address");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid address");
         }
         return null;
     }

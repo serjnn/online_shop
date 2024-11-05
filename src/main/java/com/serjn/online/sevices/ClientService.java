@@ -23,15 +23,10 @@ public class ClientService {
     private final ClientRepository clientRepository;
 
 
-
-
-
     public Client findByMail(String mail) {
         return clientRepository.findByMail(mail).orElseThrow(() ->
                 new NoSuchElementException("No client with mail: " + mail));
-
     }
-
 
     public Client findCurrentClient() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

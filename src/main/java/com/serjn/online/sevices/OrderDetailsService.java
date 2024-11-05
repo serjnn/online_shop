@@ -14,13 +14,15 @@ public class OrderDetailsService {
 
     private final OrderDetailsRepository orderDetailsRepository;
 
+    private final ClientService clientService;
+
     public void saveOrder(OrderDetails orderDetails) {
         orderDetailsRepository.save(orderDetails);
     }
 
 
-    public List<OrderDetails> findClientsOrderDetails(Long clientId) {
-
+    public List<OrderDetails> findClientsOrderDetails() {
+        Long clientId = clientService.findCurrentClient().getId();
         return orderDetailsRepository.findByClientId(clientId);
 
     }
