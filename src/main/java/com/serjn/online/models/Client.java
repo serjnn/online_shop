@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,9 +36,7 @@ public class Client {
     @Column(length = 10, nullable = false)
     private String role;
 
-
-
-    private Integer balance = 0;
+    private BigDecimal balance = new BigDecimal(0);
 
     public Client(String mail, String password, Bucket bucket, String role) {
         this.mail = mail;

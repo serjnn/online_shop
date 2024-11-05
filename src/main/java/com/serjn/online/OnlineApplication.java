@@ -9,7 +9,6 @@ public class OnlineApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(OnlineApplication.class, args);
 	}
-	//TODO what should i return in endpoints like responseEntity or what
 
 }
 

@@ -1,5 +1,7 @@
 package com.serjn.online.sevices.utils;
 
+import com.serjn.online.exceptions.EmptyAddressException;
+import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
@@ -8,12 +10,10 @@ import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -25,17 +25,13 @@ public class PurchaseService {
     private final OrderDetailsService orderDetailsService;
 
     @Transactional
-    public ResponseEntity<?> buy() {
+    public void purchase() {
 
         Client client = clientService.findCurrentClient();
         List<BucketItem> bucketItems = getBucketItemsListOfClient();
+        BigDecimal sum = getSumOfBucket(bucketItems);
 
-        int sum = getSumOfBucket(bucketItems);
-
-      Optional<ResponseEntity<?>> clientValidationResult = clientValidationCheck(client,sum);
-        if (clientValidationResult.isPresent()) {
-            return clientValidationResult.get();
-        }
+        purchaseValidationChecks(client, sum);
 
         OrderDetails orderDetails = new OrderDetails(
                 client.getId(),
@@ -43,11 +39,21 @@ public class PurchaseService {
                 sum
         );
 
-        commitPurchase(client,orderDetails,sum);
+        commitPurchase(client, orderDetails, sum);
 
-        return ResponseEntity.ok(orderDetails);
 
     }
+
+    private void purchaseValidationChecks(Client client, BigDecimal sum) {
+        if (client.getAddress().isEmpty()) {
+            throw new EmptyAddressException();
+        }
+        if (client.getBalance().compareTo(sum) < 0) {
+            throw new InsufficientFundsException();
+        }
+
+    }
+
     @Transactional
     public List<BucketItem> getBucketItemsListOfClient() {
         Bucket bucket = clientService.findCurrentClient().getBucket();
@@ -55,9 +61,9 @@ public class PurchaseService {
 
     }
 
-    private void commitPurchase(Client client, OrderDetails orderDetails,Integer sum) {
+    private void commitPurchase(Client client, OrderDetails orderDetails, BigDecimal sum) {
         orderDetailsService.saveOrder(orderDetails);
-        client.setBalance(client.getBalance() - sum);
+        client.setBalance(client.getBalance().subtract(sum));
         Bucket bucket = client.getBucket();
         List<BucketItem> list = bucket.getBucketItems();
         list.clear();
@@ -65,8 +71,9 @@ public class PurchaseService {
 
     }
 
-    private int getSumOfBucket(List<BucketItem> bucketItems) {
-        return bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
+    private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
+        int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
+        return BigDecimal.valueOf(res);
     }
 
     private String getProductIds(List<BucketItem> bucketItems) {
@@ -78,14 +85,4 @@ public class PurchaseService {
     }
 
 
-
-    private Optional<ResponseEntity<?>> clientValidationCheck(Client client, int sum) {
-        if (client.getAddress() == null) {
-            return Optional.of(new ResponseEntity<>("Please enter your address.", HttpStatus.BAD_REQUEST));
-        }
-        if (client.getBalance() < sum) {
-            return Optional.of(new ResponseEntity<>("Not enough money", HttpStatus.BAD_REQUEST));
-        }
-        return Optional.empty();
-    }
 }
