@@ -3,6 +3,8 @@ package com.serjn.online.sevices;
 
 import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.exceptions.InvalidAddressException;
+import com.serjn.online.models.Bucket;
+import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -74,5 +77,16 @@ public class ClientService {
                 client.getAddress(),
                 client.getBalance());
 
+    }
+
+    public void clearBucket(Client client) {
+        Bucket bucket = client.getBucket();
+        List<BucketItem> list = bucket.getBucketItems();
+        list.clear();
+    }
+
+    public void deductMoney(Client client, BigDecimal sum) {
+        client.setBalance(client.getBalance().subtract(sum));
+        save(client);
     }
 }
