@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,10 +25,8 @@ public class Bucket {
     @JoinColumn(name = "client_id")
     private Client client;
 
-    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<BucketItem> bucketItems;
+    @OneToMany(mappedBy = "bucket", cascade = CascadeType.ALL, orphanRemoval = true,
+            fetch = FetchType.LAZY)
+    private List<BucketItem> bucketItems = new ArrayList<>();
 
-    public Bucket(Client client) {
-        this.client = client;
-    }
 }

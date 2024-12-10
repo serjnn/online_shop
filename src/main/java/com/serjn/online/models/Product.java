@@ -30,10 +30,5 @@ public class Product {
     @Column(nullable = false)
     private Category category;
 
-    public Product(String name, String description, int price, Category category) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.category = category;
-    }
+
 }

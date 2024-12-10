@@ -9,6 +9,7 @@ import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.exceptions.InvalidAddressException;
 import com.serjn.online.models.BucketItem;
+import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ClientService;
@@ -56,7 +57,8 @@ public class ClientController {
 
     @GetMapping("/bucketItems")
     List<BucketItem> getBucketItems() {
-        return purchaseService.getBucketItemsListOfClient();
+        Client client = clientService.findCurrentClient();
+        return purchaseService.getBucketItemsListOfClient(client);
     }
 
     @GetMapping("/purchase")

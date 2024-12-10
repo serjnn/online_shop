@@ -26,9 +26,8 @@ public class PurchaseService {
 
     @Transactional
     public void purchase() {
-
         Client client = clientService.findCurrentClient();
-        List<BucketItem> bucketItems = getBucketItemsListOfClient();
+        List<BucketItem> bucketItems = getBucketItemsListOfClient(client);
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);
@@ -38,13 +37,29 @@ public class PurchaseService {
                 getProductIds(bucketItems),
                 sum
         );
-        
-        clientService.deductMoney(client,sum);
-        orderDetailsService.saveOrder(orderDetails);
-        clientService.clearBucket(client);
+
+        client.setBalance(client.getBalance().subtract(sum));
+        client.getBucket().getBucketItems().clear();
+
+        clientService.save(client);
+        orderDetailsService.save(orderDetails);
 
 
 
+    }
+
+
+    @Transactional
+    public List<BucketItem> getBucketItemsListOfClient(Client client) {
+        Bucket bucket = client.getBucket();
+        return bucket.getBucketItems();
+
+    }
+
+
+    private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
+        int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
+        return BigDecimal.valueOf(res);
     }
 
     private void purchaseValidationChecks(Client client, BigDecimal sum) {
@@ -55,19 +70,6 @@ public class PurchaseService {
             throw new InsufficientFundsException();
         }
 
-    }
-
-    @Transactional
-    public List<BucketItem> getBucketItemsListOfClient() {
-        Bucket bucket = clientService.findCurrentClient().getBucket();
-        return bucket.getBucketItems();
-
-    }
-
-
-    private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
-        int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
-        return BigDecimal.valueOf(res);
     }
 
     private String getProductIds(List<BucketItem> bucketItems) {

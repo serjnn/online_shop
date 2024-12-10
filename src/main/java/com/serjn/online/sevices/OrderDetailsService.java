@@ -16,7 +16,7 @@ public class OrderDetailsService {
 
     private final ClientService clientService;
 
-    public void saveOrder(OrderDetails orderDetails) {
+    public void save(OrderDetails orderDetails) {
         orderDetailsRepository.save(orderDetails);
     }
 
