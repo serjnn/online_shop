@@ -38,8 +38,11 @@ public class PurchaseService {
                 getProductIds(bucketItems),
                 sum
         );
+        
+        clientService.deductMoney(client,sum);
+        orderDetailsService.saveOrder(orderDetails);
+        clientService.clearBucket(client);
 
-        commitPurchase(client, orderDetails, sum);
 
 
     }
@@ -61,15 +64,6 @@ public class PurchaseService {
 
     }
 
-    private void commitPurchase(Client client, OrderDetails orderDetails, BigDecimal sum) {
-        orderDetailsService.saveOrder(orderDetails);
-        client.setBalance(client.getBalance().subtract(sum));
-        Bucket bucket = client.getBucket();
-        List<BucketItem> list = bucket.getBucketItems();
-        list.clear();
-        clientService.save(client);
-
-    }
 
     private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
         int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
