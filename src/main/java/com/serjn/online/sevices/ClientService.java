@@ -3,17 +3,17 @@ package com.serjn.online.sevices;
 
 import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.exceptions.InvalidAddressException;
+import com.serjn.online.models.Bucket;
+import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -30,8 +30,6 @@ public class ClientService {
 
     public Client findCurrentClient() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        userDetails.getUsername();
         String currentMail = authentication.getName();
         return findByMail(currentMail);
 
@@ -39,14 +37,6 @@ public class ClientService {
 
     public void save(Client client) {
         clientRepository.save(client);
-    }
-
-
-    public ResponseEntity<HttpStatus> addBalance(BigDecimal balance) {
-        Client client = findCurrentClient();
-        client.setBalance(client.getBalance().add(balance));
-        save(client);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -69,10 +59,25 @@ public class ClientService {
 
     public ClientDto getTransferClient() {
         Client client = findCurrentClient();
-        return new ClientDto(client.getId()
-                , client.getMail(),
+        return new ClientDto(client.getId(),
+                client.getMail(),
                 client.getAddress(),
                 client.getBalance());
+
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<BucketItem> getBucketItemsListOfClient(Client client) {
+        Bucket bucket = client.getBucket();
+        return bucket.getBucketItems();
+
+    }
+
+    @Transactional(readOnly = true)
+    public Bucket test() {
+        Client client =findCurrentClient();
+        return client.getBucket();
 
     }
 

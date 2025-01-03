@@ -2,15 +2,14 @@ package com.serjn.online.sevices.utils;
 
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
-import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -22,12 +21,12 @@ import java.util.stream.Collectors;
 public class PurchaseService {
 
     private final ClientService clientService;
-    private final OrderDetailsService orderDetailsService;
+                                                                                                                                                                                                                private final OrderDetailsService orderDetailsService;
 
     @Transactional
     public void purchase() {
         Client client = clientService.findCurrentClient();
-        List<BucketItem> bucketItems = getBucketItemsListOfClient(client);
+        List<BucketItem> bucketItems = clientService.getBucketItemsListOfClient(client);
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);
@@ -49,12 +48,7 @@ public class PurchaseService {
     }
 
 
-    @Transactional
-    public List<BucketItem> getBucketItemsListOfClient(Client client) {
-        Bucket bucket = client.getBucket();
-        return bucket.getBucketItems();
 
-    }
 
 
     private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {

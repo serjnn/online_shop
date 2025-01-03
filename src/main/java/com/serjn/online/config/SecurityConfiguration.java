@@ -14,7 +14,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -38,21 +37,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/", "/api/v1/register", "/api/v1/auth").permitAll();
+                    registry.requestMatchers("/", "/api/v1/register", "/api/v1/auth"
+                    ,"/categories/**").permitAll();
                     registry.anyRequest().hasRole("client");
-
-                })
-
-
+        })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .build();
-
-
     }
-
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -63,12 +57,6 @@ public class SecurityConfiguration {
             }
         };
     }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return clientDetailService;
-    }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

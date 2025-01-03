@@ -10,7 +10,6 @@ import com.serjn.online.models.Client;
 import com.serjn.online.sevices.ClientDetailService;
 import com.serjn.online.sevices.ClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +28,7 @@ public class AuthHandler {
     private final ClientService clientService;
 
 
-    public void auth(@RequestBody AuthRequest authRequest) {
+    public String auth(@RequestBody AuthRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authRequest.getMail(),
@@ -41,8 +40,7 @@ public class AuthHandler {
         }
         UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
 
-        String token = jwtService.generateToken(userDetails);
-        ResponseEntity.ok(token);
+        return jwtService.generateToken(userDetails);
     }
 
     public void register(RegRequest regRequest) {

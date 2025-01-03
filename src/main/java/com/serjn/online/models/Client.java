@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -14,7 +13,6 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @Entity
-@ToString
 @Table(name = "client")
 public class Client {
     @Id
@@ -30,7 +28,6 @@ public class Client {
     @Column(length = 300)
     private String address;
 
-
     @JsonIgnore
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private Bucket bucket;
@@ -43,7 +40,6 @@ public class Client {
     public Client(String mail, String password, Bucket bucket, String role) {
         this.mail = mail;
         this.password = password;
-
         this.bucket = bucket;
         this.role = role;
     }

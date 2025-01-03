@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "bucketItems")
+@Table(name = "bucket_items")
 public class BucketItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,7 @@ public class BucketItem {
     @OneToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bucket_id", nullable = false)

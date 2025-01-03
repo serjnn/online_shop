@@ -8,6 +8,7 @@ import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.exceptions.InvalidAddressException;
+import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
@@ -21,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -48,17 +48,22 @@ public class ClientController {
     @PostMapping("/auth")
     ResponseEntity<String> auth(@RequestBody AuthRequest authRequest) {
         try {
-            authHandler.auth(authRequest);
+            String token = (authHandler.auth(authRequest));
+            return ResponseEntity.status(200).body(token);
         } catch (AuthFailedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Auth failed");
         }
-        return null;
     }
 
     @GetMapping("/bucketItems")
     List<BucketItem> getBucketItems() {
         Client client = clientService.findCurrentClient();
-        return purchaseService.getBucketItemsListOfClient(client);
+        return clientService.getBucketItemsListOfClient(client);
+    }
+
+    @GetMapping("/test")
+    Bucket bucket() {
+        return clientService.test();
     }
 
     @GetMapping("/purchase")
@@ -85,11 +90,6 @@ public class ClientController {
         return clientService.getTransferClient();
     }
 
-    @PostMapping("/addBalance")
-    ResponseEntity<HttpStatus> addBalance(@RequestParam BigDecimal amount) {
-        return clientService.addBalance(amount);
-
-    }
 
     @PostMapping("/changeAddress")
     ResponseEntity<String> changeAddress(@RequestParam String address) {
@@ -102,13 +102,13 @@ public class ClientController {
     }
 
     @GetMapping("/addProduct/{productId}")
-    ResponseEntity<HttpStatus> addToBucket(@PathVariable("productId") Long productId) {
-        return bucketService.addToBucket(productId);
+    void addToBucket(@PathVariable("productId") Long productId) {
+        bucketService.addToBucket(productId);
     }
 
     @GetMapping("/removeProduct/{productId}")
-    ResponseEntity<HttpStatus> removeFromBucket(@PathVariable("productId") Long productId) {
-        return bucketService.removeFromBucket(productId);
+    void removeFromBucket(@PathVariable("productId") Long productId) {
+        bucketService.removeFromBucket(productId);
     }
 
 
