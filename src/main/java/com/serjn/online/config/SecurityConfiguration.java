@@ -38,7 +38,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/", "/api/v1/register", "/api/v1/auth"
-                    ,"/categories/**").permitAll();
+                    ,"/findProductByCat/**").permitAll();
                     registry.anyRequest().hasRole("client");
         })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
@@ -53,7 +53,11 @@ public class SecurityConfiguration {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:3000").allowedMethods("GET", "POST", "PUT", "DELETE").allowedHeaders("*").allowCredentials(true);
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }

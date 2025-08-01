@@ -1,22 +1,11 @@
 package com.serjn.online.controllers;
 
 
-import com.serjn.online.DTOs.AuthRequest;
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.DTOs.RegRequest;
-import com.serjn.online.exceptions.AuthFailedException;
-import com.serjn.online.exceptions.EmptyAddressException;
-import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.exceptions.InvalidAddressException;
-import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
-import com.serjn.online.models.OrderDetails;
-import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ClientService;
-import com.serjn.online.sevices.OrderDetailsService;
-import com.serjn.online.sevices.utils.AuthHandler;
-import com.serjn.online.sevices.utils.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,66 +17,19 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class ClientController {
-    private final BucketService bucketService;
-    private final OrderDetailsService orderDetailsService;
     private final ClientService clientService;
-    private final PurchaseService purchaseService;
-    private final AuthHandler authHandler;
 
-    @PostMapping("/register")
-    ResponseEntity<String> reg(@RequestBody RegRequest regRequest) {
-        try {
-            authHandler.register(regRequest);
-        } catch (AuthFailedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Register failed");
-        }
-        return null;
+
+    @GetMapping("/findClientsBucket")
+    List<BucketItem> findClientsBucket() {
+        Client client = clientService.findAuthenticatedClient();
+        return clientService.findClientsBucket(client);
     }
 
 
-    @PostMapping("/auth")
-    ResponseEntity<String> auth(@RequestBody AuthRequest authRequest) {
-        try {
-            String token = (authHandler.auth(authRequest));
-            return ResponseEntity.status(200).body(token);
-        } catch (AuthFailedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Auth failed");
-        }
-    }
-
-    @GetMapping("/bucketItems")
-    List<BucketItem> getBucketItems() {
-        Client client = clientService.findCurrentClient();
-        return clientService.getBucketItemsListOfClient(client);
-    }
-
-    @GetMapping("/test")
-    Bucket bucket() {
-        return clientService.test();
-    }
-
-    @GetMapping("/purchase")
-    ResponseEntity<String> purchase() {
-        try {
-            purchaseService.purchase();
-        } catch (EmptyAddressException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty address");
-        } catch (InsufficientFundsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough money");
-
-        }
-        return null;
-
-    }
-
-    @GetMapping("/orderDetails/{clientId}")
-    List<OrderDetails> getClientsOrderDetails() {
-        return orderDetailsService.findClientsOrderDetails();
-    }
-
-    @GetMapping("/clientInfo")
-    ClientDto clientInfo() {
-        return clientService.getTransferClient();
+    @GetMapping("/findClientInfo")
+    ClientDto findClientInfo() {
+        return clientService.findClientInfo();
     }
 
 
@@ -101,15 +43,12 @@ public class ClientController {
         return null;
     }
 
-    @GetMapping("/addProduct/{productId}")
-    void addToBucket(@PathVariable("productId") Long productId) {
-        bucketService.addToBucket(productId);
+    @GetMapping("/secured")
+    String secured() {
+        return "";
     }
 
-    @GetMapping("/removeProduct/{productId}")
-    void removeFromBucket(@PathVariable("productId") Long productId) {
-        bucketService.removeFromBucket(productId);
-    }
+
 
 
 }

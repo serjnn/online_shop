@@ -16,10 +16,9 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getProductsByCategory(Category category) {
+    public List<Product> findProductsByCategory(Category category) {
         return productRepository.findProductsByCategory(category);
     }
-
 
 
     public Product findById(Long id) {
@@ -27,7 +26,7 @@ public class ProductService {
                 -> new NoSuchElementException("No product with id: " + id));
     }
 
-    public void save(Product product){
+    public void saveProduct(Product product){
         productRepository.save(product);
     }
 

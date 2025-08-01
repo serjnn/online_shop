@@ -2,7 +2,6 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.exceptions.InvalidAddressException;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
@@ -22,16 +21,15 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
 
-
-    public Client findByMail(String mail) {
+    public Client findClientByMail(String mail) {
         return clientRepository.findByMail(mail).orElseThrow(() ->
                 new NoSuchElementException("No client with mail: " + mail));
     }
 
-    public Client findCurrentClient() {
+    public Client findAuthenticatedClient() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentMail = authentication.getName();
-        return findByMail(currentMail);
+        String mail = authentication.getName();
+        return findClientByMail(mail);
 
     }
 
@@ -41,24 +39,16 @@ public class ClientService {
 
 
     public void setAddress(String address) {
-        if (!isValidAddress(address)) {
-            throw new InvalidAddressException();
-        }
+        //TODO is valid
 
-        Client client = findCurrentClient();
+        Client client = findAuthenticatedClient();
         client.setAddress(address);
         save(client);
-
-    }
-
-    private boolean isValidAddress(String address) {
-        return address.length() > 5 && address.contains(" ");
-
     }
 
 
-    public ClientDto getTransferClient() {
-        Client client = findCurrentClient();
+    public ClientDto findClientInfo() {
+        Client client = findAuthenticatedClient();
         return new ClientDto(client.getId(),
                 client.getMail(),
                 client.getAddress(),
@@ -68,17 +58,11 @@ public class ClientService {
 
 
     @Transactional(readOnly = true)
-    public List<BucketItem> getBucketItemsListOfClient(Client client) {
+    public List<BucketItem> findClientsBucket(Client client) {
         Bucket bucket = client.getBucket();
         return bucket.getBucketItems();
 
     }
 
-    @Transactional(readOnly = true)
-    public Bucket test() {
-        Client client =findCurrentClient();
-        return client.getBucket();
-
-    }
 
 }

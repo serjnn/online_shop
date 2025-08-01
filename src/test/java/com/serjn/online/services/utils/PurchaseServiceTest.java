@@ -71,7 +71,7 @@ public class PurchaseServiceTest {
     @Test
     void purchaseSuccessTest() {
 
-        when(clientService.findCurrentClient()).thenReturn(client);
+        when(clientService.findAuthenticatedClient()).thenReturn(client);
 
         purchaseService.purchase();
 

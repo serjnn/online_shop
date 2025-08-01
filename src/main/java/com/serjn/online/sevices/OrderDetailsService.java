@@ -22,7 +22,7 @@ public class OrderDetailsService {
 
 
     public List<OrderDetails> findClientsOrderDetails() {
-        Long clientId = clientService.findCurrentClient().getId();
+        Long clientId = clientService.findAuthenticatedClient().getId();
         return orderDetailsRepository.findByClientId(clientId);
 
     }
