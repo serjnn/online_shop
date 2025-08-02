@@ -1,8 +1,8 @@
 package com.serjn.online.sevices.utils;
 
 
-import com.serjn.online.DTOs.AuthRequest;
-import com.serjn.online.DTOs.RegRequest;
+import com.serjn.online.DTOs.AuthRequestDto;
+import com.serjn.online.DTOs.RegisterRequestDto;
 import com.serjn.online.JWT.JwtService;
 import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.models.Bucket;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
-public class AuthHandler {
+public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final ClientDetailService clientDetailService;
@@ -28,7 +28,7 @@ public class AuthHandler {
     private final ClientService clientService;
 
 
-    public String auth(@RequestBody AuthRequest authRequest) {
+    public String auth(@RequestBody AuthRequestDto authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authRequest.getMail(),
@@ -43,18 +43,13 @@ public class AuthHandler {
         return jwtService.generateToken(userDetails);
     }
 
-    public void register(RegRequest regRequest) {
-        if (regRequest.getMail() == null || regRequest.getPassword() == null || !regRequest.getPassword().equals(
-                regRequest.getRepeatPassword()
-        )) {
-            throw new AuthFailedException();
-        }
+    public void register(RegisterRequestDto registerRequestDto) {
 
         Bucket bucket = new Bucket();
 
         Client client = new Client(
-                regRequest.getMail(),
-                passwordEncoder.encode(regRequest.getPassword()),
+                registerRequestDto.getMail(),
+                passwordEncoder.encode(registerRequestDto.getPassword()),
                 bucket,
                 "client"
         );

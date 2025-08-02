@@ -17,11 +17,11 @@ public class BucketService {
     private final ProductService productService;
 
 
-    public void addToBucket(Long productId) {
-        Client client = clientService.findCurrentClient();
+    public void addProductToBucket(Long productId) {
+        Client client = clientService.findAuthenticatedClient();
         Bucket bucket = client.getBucket();
 
-        BucketItem existingBucketItem = getExistingBucketItem(bucket, productId);
+        BucketItem existingBucketItem = findExistingBucketItem(bucket, productId);
 
         BucketItem bucketItem;
         if (existingBucketItem != null) {
@@ -35,10 +35,10 @@ public class BucketService {
     }
 
 
-    public void removeFromBucket(Long productId) {
-        Client client = clientService.findCurrentClient();
+    public void removeProductFromBucket(Long productId) {
+        Client client = clientService.findAuthenticatedClient();
         Bucket bucket = client.getBucket();
-        BucketItem existingBucketItem = getExistingBucketItem(bucket, productId);
+        BucketItem existingBucketItem = findExistingBucketItem(bucket, productId);
 
         if (existingBucketItem == null) {
             return;
@@ -53,7 +53,7 @@ public class BucketService {
 
     }
 
-    private BucketItem getExistingBucketItem(Bucket bucket, Long productId) {
+    private BucketItem findExistingBucketItem(Bucket bucket, Long productId) {
         return bucket
                 .getBucketItems()
                 .stream()
