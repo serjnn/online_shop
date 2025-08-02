@@ -1,5 +1,6 @@
 package com.serjn.online.controllers;
 
+import com.serjn.online.DTOs.ProductDto;
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.models.Category;
@@ -63,8 +64,8 @@ public class ShoppingController {
     }
 
     @PostMapping("/addNewProduct")
-    void addNewProduct(@RequestBody Product product) {
-        productService.saveProduct(product);
+    void addNewProduct(@RequestBody ProductDto productDto) {
+        productService.saveProduct(productDto);
 
     }
 }

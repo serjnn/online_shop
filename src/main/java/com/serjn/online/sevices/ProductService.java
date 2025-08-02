@@ -1,6 +1,7 @@
 package com.serjn.online.sevices;
 
 
+import com.serjn.online.DTOs.ProductDto;
 import com.serjn.online.models.Category;
 import com.serjn.online.models.Product;
 import com.serjn.online.repositories.ProductRepository;
@@ -26,8 +27,8 @@ public class ProductService {
                 -> new NoSuchElementException("No product with id: " + id));
     }
 
-    public void saveProduct(Product product){
-        productRepository.save(product);
+    public void saveProduct(ProductDto dto){
+        productRepository.save(new Product(dto.getName(),dto.getDescription(),dto.getPrice(),dto.getCategory()));
     }
 
 

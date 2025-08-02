@@ -2,13 +2,12 @@ package com.serjn.online.controllers;
 
 
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.exceptions.InvalidAddressException;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.sevices.ClientService;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Validated
 public class ClientController {
     private final ClientService clientService;
 
@@ -34,21 +34,15 @@ public class ClientController {
 
 
     @PostMapping("/changeAddress")
-    ResponseEntity<String> changeAddress(@RequestParam String address) {
-        try {
-            clientService.setAddress(address);
-        } catch (InvalidAddressException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid address");
-        }
-        return null;
+    void changeAddress(@Size(min = 10) @RequestParam String address) {
+        clientService.setAddress(address);
+
     }
 
     @GetMapping("/secured")
     String secured() {
         return "";
     }
-
-
 
 
 }
