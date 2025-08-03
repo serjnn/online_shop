@@ -7,7 +7,7 @@ import com.serjn.online.models.Client;
 import com.serjn.online.models.Product;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
-import com.serjn.online.sevices.utils.PurchaseService;
+import com.serjn.online.sevices.PurchaseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -9,7 +9,7 @@ import com.serjn.online.models.Product;
 import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
-import com.serjn.online.sevices.utils.PurchaseService;
+import com.serjn.online.sevices.PurchaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
