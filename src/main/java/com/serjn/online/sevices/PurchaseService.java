@@ -1,12 +1,10 @@
-package com.serjn.online.sevices.utils;
+package com.serjn.online.sevices;
 
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
 import com.serjn.online.models.OrderDetails;
-import com.serjn.online.sevices.ClientService;
-import com.serjn.online.sevices.OrderDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

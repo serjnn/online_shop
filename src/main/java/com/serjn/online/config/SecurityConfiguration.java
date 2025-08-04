@@ -29,11 +29,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-
     private final ClientDetailService clientDetailService;
-
-
-
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests(registry -> {
@@ -43,8 +40,8 @@ public class SecurityConfiguration {
                     ,"/findProductByCat/**",
                             "/swagger-ui.html",
                             "/v3/api-docs").permitAll();
-                    registry.anyRequest().permitAll();
-                            //hasRole("client");
+                    registry.anyRequest().
+                            hasRole("client");
         })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)

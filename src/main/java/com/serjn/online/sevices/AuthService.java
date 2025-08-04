@@ -1,4 +1,4 @@
-package com.serjn.online.sevices.utils;
+package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.AuthRequestDto;
@@ -7,8 +7,6 @@ import com.serjn.online.JWT.JwtService;
 import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.Client;
-import com.serjn.online.sevices.ClientDetailService;
-import com.serjn.online.sevices.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

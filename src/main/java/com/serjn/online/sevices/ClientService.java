@@ -39,8 +39,6 @@ public class ClientService {
 
 
     public void setAddress(String address) {
-        //TODO is valid
-
         Client client = findAuthenticatedClient();
         client.setAddress(address);
         save(client);

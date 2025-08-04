@@ -3,7 +3,7 @@ package com.serjn.online.controllers;
 
 import com.serjn.online.DTOs.AuthRequestDto;
 import com.serjn.online.DTOs.RegisterRequestDto;
-import com.serjn.online.sevices.utils.AuthService;
+import com.serjn.online.sevices.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
