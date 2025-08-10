@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class PurchaseService {
 
     private final ClientService clientService;
+
                                                                                                                                                                                                                 private final OrderDetailsService orderDetailsService;
 
     @Transactional
