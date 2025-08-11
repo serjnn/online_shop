@@ -26,6 +26,20 @@ public class AuthService {
     private final JwtService jwtService;
     private final ClientRepository clientRepository;
 
+    public void register(RegisterRequestDto registerRequestDto) {
+
+        Bucket bucket = new Bucket();
+
+        Client client = new Client(
+                registerRequestDto.getMail(),
+                passwordEncoder.encode(registerRequestDto.getPassword()),
+                bucket,
+                "client"
+        );
+        bucket.setClient(client);
+        clientRepository.save(client);
+
+    }
 
     public String auth(@RequestBody AuthRequestDto authRequest) {
         try {
@@ -42,19 +56,6 @@ public class AuthService {
         return jwtService.generateToken(userDetails);
     }
 
-    public void register(RegisterRequestDto registerRequestDto) {
 
-        Bucket bucket = new Bucket();
-
-        Client client = new Client(
-                registerRequestDto.getMail(),
-                passwordEncoder.encode(registerRequestDto.getPassword()),
-                bucket,
-                "client"
-        );
-        bucket.setClient(client);
-        clientRepository.save(client);
-
-    }
 
 }

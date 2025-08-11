@@ -1,8 +1,6 @@
 package com.serjn.online.controllers;
 
 import com.serjn.online.DTOs.ProductDto;
-import com.serjn.online.exceptions.EmptyAddressException;
-import com.serjn.online.exceptions.InsufficientFundsException;
 import com.serjn.online.models.Category;
 import com.serjn.online.models.OrderDetails;
 import com.serjn.online.models.Product;
@@ -11,8 +9,6 @@ import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
 import com.serjn.online.sevices.PurchaseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,11 +23,9 @@ public class ShoppingController {
     private final PurchaseService purchaseService;
     private final ProductService productService;
 
-
     @GetMapping("/purchase")
-    ResponseEntity<String> purchase() {
+    void purchase() {
         purchaseService.purchase();
-        return ResponseEntity.ok("Purchase successful");
     }
 
     @GetMapping("/findClientsOrderDetails/{clientId}")

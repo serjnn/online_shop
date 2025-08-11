@@ -8,7 +8,10 @@ import com.serjn.online.sevices.ClientService;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class ClientController {
 
 
     @GetMapping("/changeAddress")
-    void changeAddress(@Size(min = 10)  @RequestParam String address) {
+    void changeAddress(@Size(min = 10) @RequestParam String address) {
         clientService.setAddress(address);
     }
 
