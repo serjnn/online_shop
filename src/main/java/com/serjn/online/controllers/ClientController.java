@@ -19,7 +19,6 @@ import java.util.List;
 public class ClientController {
     private final ClientService clientService;
 
-
     @GetMapping("/findClientsBucket")
     List<BucketItem> findClientsBucket() {
         Client client = clientService.findAuthenticatedClient();
@@ -33,10 +32,9 @@ public class ClientController {
     }
 
 
-    @PostMapping("/changeAddress")
-    void changeAddress(@Size(min = 10) @RequestParam String address) {
+    @GetMapping("/changeAddress")
+    void changeAddress(@Size(min = 10)  @RequestParam String address) {
         clientService.setAddress(address);
-
     }
 
     @GetMapping("/secured")

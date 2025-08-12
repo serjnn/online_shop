@@ -7,6 +7,7 @@ import com.serjn.online.JWT.JwtService;
 import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.models.Bucket;
 import com.serjn.online.models.Client;
+import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +24,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final ClientDetailService clientDetailService;
     private final JwtService jwtService;
-    private final ClientService clientService;
+    private final ClientRepository clientRepository;
 
 
     public String auth(@RequestBody AuthRequestDto authRequest) {
@@ -52,7 +53,7 @@ public class AuthService {
                 "client"
         );
         bucket.setClient(client);
-        clientService.save(client);
+        clientRepository.save(client);
 
     }
 

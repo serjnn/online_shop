@@ -41,7 +41,8 @@ public class SecurityConfiguration {
                             "/swagger-ui.html",
                             "/v3/api-docs").permitAll();
                     registry.anyRequest().
-                            hasRole("client");
+                            permitAll();
+//                            hasRole("client");
         })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)

@@ -23,7 +23,7 @@ public class ClientService {
 
     public Client findClientByMail(String mail) {
         return clientRepository.findByMail(mail).orElseThrow(() ->
-                new NoSuchElementException("No client with mail: " + mail));
+                new NoSuchElementException("No such client with mail: " + mail));
     }
 
     public Client findAuthenticatedClient() {
@@ -31,10 +31,6 @@ public class ClientService {
         String mail = authentication.getName();
         return findClientByMail(mail);
 
-    }
-
-    public void save(Client client) {
-        clientRepository.save(client);
     }
 
 
@@ -62,5 +58,8 @@ public class ClientService {
 
     }
 
+    public void save(Client client) {
+        clientRepository.save(client);
+    }
 
 }

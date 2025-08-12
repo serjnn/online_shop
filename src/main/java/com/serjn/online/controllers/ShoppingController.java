@@ -30,16 +30,8 @@ public class ShoppingController {
 
     @GetMapping("/purchase")
     ResponseEntity<String> purchase() {
-        try {
-            purchaseService.purchase();
-        } catch (EmptyAddressException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Empty address");
-        } catch (InsufficientFundsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Not enough money");
-
-        }
-        return null;
-
+        purchaseService.purchase();
+        return ResponseEntity.ok("Purchase successful");
     }
 
     @GetMapping("/findClientsOrderDetails/{clientId}")
