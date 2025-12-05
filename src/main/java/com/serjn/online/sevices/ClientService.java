@@ -52,7 +52,7 @@ public class ClientService {
 
 
     @Transactional(readOnly = true)
-    public List<BucketItem> findClientsBucket(Client client) {
+    public List<BucketItem> findClientBucketItems(Client client) {
         Bucket bucket = client.getBucket();
         return bucket.getBucketItems();
 

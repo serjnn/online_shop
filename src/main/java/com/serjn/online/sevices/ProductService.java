@@ -24,11 +24,12 @@ public class ProductService {
 
     public Product findById(Long id) {
         return productRepository.findById(id).orElseThrow(()
-                -> new NoSuchElementException("No product with id: " + id));
+                -> new NoSuchElementException("No product with id: ".concat(String.valueOf(id))));
     }
 
     public void saveProduct(ProductDto dto){
-        productRepository.save(new Product(dto.getName(),dto.getDescription(),dto.getPrice(),dto.getCategory()));
+        Product product =new Product(dto.getName(),dto.getDescription(),dto.getPrice(),dto.getCategory());
+        productRepository.save(product);
     }
 
 

@@ -6,6 +6,7 @@ import com.serjn.online.DTOs.RegisterRequestDto;
 import com.serjn.online.sevices.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,9 @@ public class AuthController {
     @PostMapping("/auth")
     ResponseEntity<String> auth(@RequestBody AuthRequestDto authRequest) {
         String token = authService.auth(authRequest);
+        if (token == null || token.isEmpty()) {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
         return ResponseEntity.ok(token);
 
     }

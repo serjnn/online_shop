@@ -2,10 +2,8 @@ package com.serjn.online.controllers;
 
 import com.serjn.online.DTOs.ProductDto;
 import com.serjn.online.models.Category;
-import com.serjn.online.models.OrderDetails;
 import com.serjn.online.models.Product;
 import com.serjn.online.sevices.BucketService;
-import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
 import com.serjn.online.sevices.PurchaseService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import java.util.List;
 public class ShoppingController {
 
     private final BucketService bucketService;
-    private final OrderDetailsService orderDetailsService;
     private final PurchaseService purchaseService;
     private final ProductService productService;
 
@@ -28,28 +25,23 @@ public class ShoppingController {
         purchaseService.purchase();
     }
 
-    @GetMapping("/findClientsOrderDetails/{clientId}")
-    List<OrderDetails> findClientsOrderDetails() {
-        return orderDetailsService.findClientsOrderDetails();
-    }
-
-    @GetMapping("/addProductToBucket/{productId}")
-    void addProductToBucket(@PathVariable("productId") Long productId) {
+    @PostMapping("/bucket/products")
+    void addProductToBucket(@RequestBody Long productId) {
         bucketService.addProductToBucket(productId);
     }
 
-    @GetMapping("/removeProduct/{productId}")
+    @DeleteMapping("/bucket/products/{productId}")
     void removeFromBucket(@PathVariable("productId") Long productId) {
         bucketService.removeProductFromBucket(productId);
     }
 
 
-    @GetMapping("/findProductByCat/{category}")
-    List<Product> findProductByCat(@PathVariable("category") Category category) {
+    @GetMapping("/products")
+    List<Product> findProductsByCategory(@RequestParam("category") Category category) {
         return productService.findProductsByCategory(category);
     }
 
-    @PostMapping("/addNewProduct")
+    @PostMapping("/products")
     void addNewProduct(@RequestBody ProductDto productDto) {
         productService.saveProduct(productDto);
 

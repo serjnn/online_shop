@@ -4,46 +4,44 @@ package com.serjn.online.controllers;
 import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.models.BucketItem;
 import com.serjn.online.models.Client;
+import com.serjn.online.models.OrderDetails;
 import com.serjn.online.sevices.ClientService;
+import com.serjn.online.sevices.OrderDetailsService;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/client")
 @RequiredArgsConstructor
 @Validated
 public class ClientController {
     private final ClientService clientService;
+    private final OrderDetailsService orderDetailsService;
 
-    @GetMapping("/findClientsBucket")
+    @GetMapping("/bucket")
     List<BucketItem> findClientsBucket() {
         Client client = clientService.findAuthenticatedClient();
-        return clientService.findClientsBucket(client);
+        return clientService.findClientBucketItems(client);
     }
 
-
-    @GetMapping("/findClientInfo")
+    @GetMapping
     ClientDto findClientInfo() {
         return clientService.findClientInfo();
     }
 
 
-    @GetMapping("/changeAddress")
-    void changeAddress(@Size(min = 10) @RequestParam String address) {
+    @PatchMapping("/address")
+    void changeAddress(@Size(min = 10) @RequestBody String address) {
         clientService.setAddress(address);
     }
 
-    @GetMapping("/secured")
-    String secured() {
-        return "";
+    @GetMapping("/orders")
+    List<OrderDetails> findOrderDetails() {
+        return orderDetailsService.findClientsOrderDetails();
     }
-
 
 }
