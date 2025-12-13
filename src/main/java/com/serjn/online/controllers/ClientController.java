@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/client")
+@RequestMapping("/api/v1/me")
 @RequiredArgsConstructor
 @Validated
 public class ClientController {
