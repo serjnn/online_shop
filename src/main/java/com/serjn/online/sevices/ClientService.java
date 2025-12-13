@@ -2,17 +2,13 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.models.Bucket;
-import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
+import com.serjn.online.model.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -30,7 +26,6 @@ public class ClientService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String mail = authentication.getName();
         return findClientByMail(mail);
-
     }
 
 
@@ -47,15 +42,6 @@ public class ClientService {
                 client.getMail(),
                 client.getAddress(),
                 client.getBalance());
-
-    }
-
-
-    @Transactional(readOnly = true)
-    public List<BucketItem> findClientBucketItems(Client client) {
-        Bucket bucket = client.getBucket();
-        return bucket.getBucketItems();
-
     }
 
     public void save(Client client) {

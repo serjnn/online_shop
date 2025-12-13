@@ -2,9 +2,10 @@ package com.serjn.online.sevices;
 
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
-import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
-import com.serjn.online.models.OrderDetails;
+import com.serjn.online.model.BucketItem;
+import com.serjn.online.model.Client;
+import com.serjn.online.model.OrderDetails;
+import com.serjn.online.services.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 public class PurchaseService {
 
     private final ClientService clientService;
+    private final OrderDetailsService orderDetailsService;
 
-                                                                                                                                                                                                                private final OrderDetailsService orderDetailsService;
+    private final BucketItemsExtractor bucketItemsExtractor;
 
     @Transactional
     public void purchase() {
         Client client = clientService.findAuthenticatedClient();
-        List<BucketItem> bucketItems = clientService.findClientBucketItems(client);
+        List<BucketItem> bucketItems = bucketItemsExtractor.getClientBucketItems(client);
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);

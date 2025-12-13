@@ -1,4 +1,4 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
 public enum Category {
     ELECTRONICS,

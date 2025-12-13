@@ -1,4 +1,4 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

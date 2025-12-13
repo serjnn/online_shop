@@ -1,4 +1,4 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
 
 import jakarta.persistence.*;
@@ -15,14 +15,14 @@ import lombok.Setter;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(length = 50, nullable = false)
     private String name;
 
     @Column(length = 300, nullable = false)
     private String description;
-
+//TODO
     @Column(nullable = false)
     private int price;
 

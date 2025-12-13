@@ -1,7 +1,7 @@
 package com.serjn.online.DTOs;
 
 
-import com.serjn.online.models.Category;
+import com.serjn.online.model.Category;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 

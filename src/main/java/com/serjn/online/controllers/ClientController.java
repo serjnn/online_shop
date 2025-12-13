@@ -2,9 +2,10 @@ package com.serjn.online.controllers;
 
 
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
-import com.serjn.online.models.OrderDetails;
+import com.serjn.online.model.BucketItem;
+import com.serjn.online.model.Client;
+import com.serjn.online.model.OrderDetails;
+import com.serjn.online.services.BucketItemsExtractor;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import jakarta.validation.constraints.Size;
@@ -21,18 +22,18 @@ import java.util.List;
 public class ClientController {
     private final ClientService clientService;
     private final OrderDetailsService orderDetailsService;
+    private final BucketItemsExtractor bucketItemsExtractor;
 
     @GetMapping("/bucket")
-    List<BucketItem> findClientsBucket() {
+    List<BucketItem> findClientBucket() {
         Client client = clientService.findAuthenticatedClient();
-        return clientService.findClientBucketItems(client);
+        return bucketItemsExtractor.getClientBucketItems(client);
     }
 
     @GetMapping
     ClientDto findClientInfo() {
         return clientService.findClientInfo();
     }
-
 
     @PatchMapping("/address")
     void changeAddress(@Size(min = 10) @RequestBody String address) {

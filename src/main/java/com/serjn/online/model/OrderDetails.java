@@ -1,4 +1,4 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
