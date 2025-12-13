@@ -48,11 +48,10 @@ public class AuthService {
                     authRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-
             throw new AuthFailedException();
         }
-        UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
 
+        UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
         return jwtService.generateToken(userDetails);
     }
 

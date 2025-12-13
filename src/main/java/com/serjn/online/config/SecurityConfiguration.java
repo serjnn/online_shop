@@ -24,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
-@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 

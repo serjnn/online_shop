@@ -25,17 +25,17 @@ public class ShoppingController {
         purchaseService.purchase();
     }
 
-    @PostMapping("/bucket/products")
+    @PostMapping("/bucket")
     void addProductToBucket(@RequestBody Long productId) {
         bucketService.addProductToBucket(productId);
     }
 
-    @DeleteMapping("/bucket/products/{productId}")
+    @DeleteMapping("/bucket/{productId}")
     void removeFromBucket(@PathVariable("productId") Long productId) {
         bucketService.removeProductFromBucket(productId);
     }
 
-
+//TODO return dtos
     @GetMapping("/products")
     List<Product> findProductsByCategory(@RequestParam("category") Category category) {
         return productService.findProductsByCategory(category);
