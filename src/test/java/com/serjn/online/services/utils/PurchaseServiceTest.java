@@ -49,11 +49,11 @@ public class PurchaseServiceTest {
 
         Product product1 = new Product();
         product1.setId(1L);
-        product1.setPrice(100);
+        product1.setPrice(BigDecimal.valueOf(100));
 
         Product product2 = new Product();
         product2.setId(2L);
-        product2.setPrice(200);
+        product2.setPrice(BigDecimal.valueOf(200));
 
         BucketItem bucketItems1 = new BucketItem();
         bucketItems1.setQuantity(1);

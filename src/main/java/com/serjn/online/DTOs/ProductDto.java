@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @Setter
 public class ProductDto {
 
+    private Long id;
+
     @Size(min = 10,max = 40)
     private String name;
 
