@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -37,6 +39,7 @@ public class AuthService {
                 "client"
         );
         bucket.setClient(client);
+        client.setBalance(BigDecimal.valueOf(500));
         clientRepository.save(client);
 
     }
@@ -48,7 +51,7 @@ public class AuthService {
                     authRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new AuthFailedException();
+            throw new AuthFailedException("Incorrect mail or password");
         }
 
         UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());

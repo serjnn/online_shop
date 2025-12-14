@@ -24,7 +24,7 @@ public class PurchaseService {
 
     private final BucketItemsExtractor bucketItemsExtractor;
 
-    @Transactional
+    @Transactional //TODO separate
     public void purchase() {
         Client client = clientService.findAuthenticatedClient();
         List<BucketItem> bucketItems =
@@ -55,11 +55,13 @@ public class PurchaseService {
     }
 
     private void purchaseValidationChecks(Client client, BigDecimal sum) {
-        if (client.getAddress().isEmpty()) {
-            throw new EmptyAddressException();
+        try {
+            client.getAddress();
+        } catch (NullPointerException e) {
+            throw new EmptyAddressException("Address is null");
         }
         if (client.getBalance().compareTo(sum) < 0) {
-            throw new InsufficientFundsException();
+            throw new InsufficientFundsException("Insufficient funds for purchase");
         }
 
     }

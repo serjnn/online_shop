@@ -1,4 +1,4 @@
-package com.serjn.online;
+package com.serjn.online.ITests.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjn.online.DTOs.AuthRequestDto;
@@ -20,15 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class BucketControllerITest {
+class UserBucketITest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,13 +49,17 @@ class BucketControllerITest {
 
     @BeforeEach
     void setUp() throws Exception {
+        String userMail = "test@example.com";
+        String userPassword = "password12345";
+
         Client client = new Client();
-        client.setMail("test@example.com");
+        client.setMail(userMail);
         client.setPassword("encodedPassword12345");
+//client.setAddress("some 123 some 123");
 
         RegisterRequestDto registerRequest = new RegisterRequestDto();
-        registerRequest.setMail("test@example.com");
-        registerRequest.setPassword("password12345");
+        registerRequest.setMail(userMail);
+        registerRequest.setPassword(userPassword);
 
         mockMvc.perform(post("/api/v1/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -62,8 +67,8 @@ class BucketControllerITest {
                 .andExpect(status().isOk());
 
         AuthRequestDto authRequest = new AuthRequestDto();
-        authRequest.setMail("test@example.com");
-        authRequest.setPassword("password12345");
+        authRequest.setMail(userMail);
+        authRequest.setPassword(userPassword);
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,28 +78,61 @@ class BucketControllerITest {
 
         this.token = result.getResponse().getContentAsString();
 
-        product1 = productRepository.save(new Product("Laptop", "Desc", new BigDecimal("1200.00"), Category.ELECTRONICS));
-        product2 = productRepository.save(new Product("Toy", "Desc", new BigDecimal("25.00"), Category.TOYS));
+        product1 = productRepository.save(
+                new Product("Laptop", "Desc", new BigDecimal("50.00"),
+                        Category.ELECTRONICS));
+        product2 = productRepository.save(
+                new Product("Toy", "Desc", new BigDecimal("25.00"),
+                        Category.TOYS));
     }
 
 
     @Test
     void shouldMatchAddedProducts() throws Exception {
-        addProductToBucket(product2.getId());
-        addProductToBucket(product2.getId());
-        addProductToBucket(product1.getId());
+        fillBucket();
 
         mockMvc.perform(get("/api/v1/me/bucket")
                         .header("Authorization", "Bearer " + this.token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(product2.getId()))
-                .andExpect(jsonPath("$[0].productName").value(product2.getName()))
+                .andExpect(
+                        jsonPath("$[0].productName").value(product2.getName()))
                 .andExpect(jsonPath("$[0].quantity").value(2))
-                .andExpect(jsonPath("$[0].price").value(product2.getPrice().doubleValue()))
+                .andExpect(jsonPath("$[0].price").value(
+                        product2.getPrice().doubleValue()))
                 .andExpect(jsonPath("$[1].productId").value(product1.getId()))
-                .andExpect(jsonPath("$[1].productName").value(product1.getName()))
+                .andExpect(
+                        jsonPath("$[1].productName").value(product1.getName()))
                 .andExpect(jsonPath("$[1].quantity").value(1))
-                .andExpect(jsonPath("$[1].price").value(product1.getPrice().doubleValue()));
+                .andExpect(jsonPath("$[1].price").value(
+                        product1.getPrice().doubleValue()));
+    }
+
+    @Test
+    void purchaseTest() throws Exception {
+        fillBucket();
+
+        mockMvc.perform(get("/api/v1/purchase")
+                        .header("Authorization", "Bearer " + this.token))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/api/v1/me")
+                        .header("Authorization", "Bearer " + this.token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.balance")
+                        .value(new BigDecimal("400.00").doubleValue()));
+
+        mockMvc.perform(get("/api/v1/me/bucket")
+                        .header("Authorization", "Bearer " + this.token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
+    }
+
+    private void fillBucket() throws Exception {
+        addProductToBucket(product2.getId());
+        addProductToBucket(product2.getId());
+        addProductToBucket(product1.getId());
     }
 
 
