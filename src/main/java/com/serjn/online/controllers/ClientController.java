@@ -1,10 +1,12 @@
 package com.serjn.online.controllers;
 
 
+import com.serjn.online.DTOs.BucketItemDto;
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.model.BucketItem;
+import com.serjn.online.DTOs.OrderDetailsDto;
+import com.serjn.online.mappers.BucketItemMapper;
+import com.serjn.online.mappers.OrderDetailsMapper;
 import com.serjn.online.model.Client;
-import com.serjn.online.model.OrderDetails;
 import com.serjn.online.services.BucketItemsExtractor;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
@@ -25,9 +27,9 @@ public class ClientController {
     private final BucketItemsExtractor bucketItemsExtractor;
 
     @GetMapping("/bucket")
-    List<BucketItem> findClientBucket() {
+    List<BucketItemDto> findClientBucket() {
         Client client = clientService.findAuthenticatedClient();
-        return bucketItemsExtractor.getClientBucketItems(client);
+        return BucketItemMapper.INSTANCE.toDtoList(bucketItemsExtractor.getClientBucketItems(client));
     }
 
     @GetMapping
@@ -41,8 +43,8 @@ public class ClientController {
     }
 
     @GetMapping("/orders")
-    List<OrderDetails> findOrderDetails() {
-        return orderDetailsService.findClientsOrderDetails();
+    List<OrderDetailsDto> findOrderDetails() {
+        return OrderDetailsMapper.INSTANCE.toDtoList(orderDetailsService.findClientsOrderDetails());
     }
 
 }

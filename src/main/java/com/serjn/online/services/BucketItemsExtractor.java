@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
+@Transactional(readOnly = true)
 public class BucketItemsExtractor {
 
-    @Transactional public List<BucketItem> getClientBucketItems(Client client) {
+    public List<BucketItem> getClientBucketItems(Client client) {
         Bucket bucket = client.getBucket();
         return bucket.getBucketItems();
     }
 
-    @Transactional
     public List<BucketItem> getClientBucketItemsExistingData(Client client, Bucket bucket) {
         return bucket.getBucketItems();
     }

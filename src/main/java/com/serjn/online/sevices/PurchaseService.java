@@ -27,7 +27,8 @@ public class PurchaseService {
     @Transactional
     public void purchase() {
         Client client = clientService.findAuthenticatedClient();
-        List<BucketItem> bucketItems = bucketItemsExtractor.getClientBucketItems(client);
+        List<BucketItem> bucketItems =
+                bucketItemsExtractor.getClientBucketItems(client);
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);
@@ -43,18 +44,14 @@ public class PurchaseService {
 
         clientService.save(client);
         orderDetailsService.save(orderDetails);
-
-
-
     }
 
 
-
-
-
     private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
-        int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
-        return BigDecimal.valueOf(res);
+        return bucketItems.stream()
+                .map(bucketItem -> bucketItem.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(bucketItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void purchaseValidationChecks(Client client, BigDecimal sum) {

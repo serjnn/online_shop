@@ -1,8 +1,8 @@
 package com.serjn.online.controllers;
 
 import com.serjn.online.DTOs.ProductDto;
+import com.serjn.online.mappers.ProductMapper;
 import com.serjn.online.model.Category;
-import com.serjn.online.model.Product;
 import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ProductService;
 import com.serjn.online.sevices.PurchaseService;
@@ -25,25 +25,23 @@ public class ShoppingController {
         purchaseService.purchase();
     }
 
-    @PostMapping("/bucket")
+    @PostMapping("/bucket/products")
     void addProductToBucket(@RequestBody Long productId) {
         bucketService.addProductToBucket(productId);
     }
 
-    @DeleteMapping("/bucket/{productId}")
+    @DeleteMapping("/bucket/products/{productId}")
     void removeFromBucket(@PathVariable("productId") Long productId) {
         bucketService.removeProductFromBucket(productId);
     }
 
-//TODO return dtos
     @GetMapping("/products")
-    List<Product> findProductsByCategory(@RequestParam("category") Category category) {
-        return productService.findProductsByCategory(category);
+    List<ProductDto> findProductsByCategory(@RequestParam("category") Category category) {
+        return ProductMapper.INSTANCE.toDtoList(productService.findProductsByCategory(category));
     }
 
     @PostMapping("/products")
     void addNewProduct(@RequestBody ProductDto productDto) {
-        productService.saveProduct(productDto);
-
+        productService.saveProduct(ProductMapper.INSTANCE.toEntity(productDto));
     }
 }

@@ -2,6 +2,7 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.DTOs.ClientDto;
+import com.serjn.online.mappers.ClientMapper;
 import com.serjn.online.model.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +39,9 @@ public class ClientService {
 
     public ClientDto findClientInfo() {
         Client client = findAuthenticatedClient();
-        return new ClientDto(client.getId(),
-                client.getMail(),
-                client.getAddress(),
-                client.getBalance());
+        return ClientMapper.INSTANCE.toDto(client);
     }
+
 
     public void save(Client client) {
         clientRepository.save(client);
