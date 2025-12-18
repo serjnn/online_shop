@@ -55,9 +55,7 @@ public class PurchaseService {
     }
 
     private void purchaseValidationChecks(Client client, BigDecimal sum) {
-        try {
-            client.getAddress();
-        } catch (NullPointerException e) {
+        if (client.getAddress() == null) {
             throw new EmptyAddressException("Address is null");
         }
         if (client.getBalance().compareTo(sum) < 0) {
