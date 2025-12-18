@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
@@ -55,7 +56,9 @@ public class AuthService {
         }
 
         UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
-        return jwtService.generateToken(userDetails);
+        String token = jwtService.generateToken(userDetails);
+        Assert.hasText(token,"Token is null");
+        return token;
     }
 
 
