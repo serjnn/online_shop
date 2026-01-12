@@ -25,11 +25,10 @@ public class AuthController {
         authService.register(registerRequestDto);
     }
 
-
     @PostMapping("/auth")
     ResponseEntity<String> auth(@RequestBody AuthRequestDto authRequest) {
         String token = authService.auth(authRequest);
-        return ResponseEntity.status(200).body(token);
+        return ResponseEntity.ok(token);
 
     }
 

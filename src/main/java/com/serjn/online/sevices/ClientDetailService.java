@@ -1,6 +1,6 @@
 package com.serjn.online.sevices;
 
-import com.serjn.online.models.Client;
+import com.serjn.online.model.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;

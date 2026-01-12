@@ -1,6 +1,5 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ public class BucketItem {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "bucket_id", nullable = false)
     private Bucket bucket;

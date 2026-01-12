@@ -1,0 +1,90 @@
+### AuthController ###
+
+# Register a new user
+POST http://localhost:8080/api/v1/register
+Content-Type: application/json
+
+{
+  "name": "testuser",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+# Authenticate and get a token
+POST http://localhost:8080/api/v1/auth
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### ShoppingController ###
+
+# Add a new product (requires auth)
+POST http://localhost:8080/api/v1/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Laptop",
+  "price": 1200.00,
+  "category": "ELECTRONICS"
+}
+
+###
+
+# Get products by category
+GET http://localhost:8080/api/v1/products?category=ELECTRONICS
+Authorization: Bearer {{token}}
+
+###
+
+# Add a product to the bucket (requires auth)
+POST http://localhost:8080/api/v1/bucket/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+1
+
+###
+
+# Remove a product from the bucket (requires auth)
+DELETE http://localhost:8080/api/v1/bucket/products/1
+Authorization: Bearer {{token}}
+
+###
+
+# Get client's order details (requires auth)
+GET http://localhost:8080/api/v1/orders
+Authorization: Bearer {{token}}
+
+###
+
+# Purchase items in the bucket (requires auth)
+POST http://localhost:8080/api/v1/purchases
+Authorization: Bearer {{token}}
+
+
+### ClientController ###
+
+# Get client info (requires auth)
+GET http://localhost:8080/api/v1/clients/me
+Authorization: Bearer {{token}}
+
+###
+
+# Get client's bucket (requires auth)
+GET http://localhost:8080/api/v1/clients/me/bucket
+Authorization: Bearer {{token}}
+
+###
+
+# Change client's address (requires auth)
+PATCH http://localhost:8080/api/v1/clients/me/address
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+"123 New Address, City"
