@@ -1,15 +1,19 @@
 package com.serjn.online.sevices;
 
 
+import com.serjn.online.DTOs.BucketItemDto;
 import com.serjn.online.DTOs.ClientDto;
+import com.serjn.online.mappers.BucketItemMapper;
 import com.serjn.online.mappers.ClientMapper;
 import com.serjn.online.model.Client;
 import com.serjn.online.repositories.ClientRepository;
+import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -17,6 +21,7 @@ import java.util.NoSuchElementException;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final BucketItemsExtractor bucketItemsExtractor;
 
     public Client findClientByMail(String mail) {
         return clientRepository.findByMail(mail).orElseThrow(() ->
@@ -47,4 +52,9 @@ public class ClientService {
         clientRepository.save(client);
     }
 
+    public List<BucketItemDto> findClientBucket() {
+        Client client = findAuthenticatedClient();
+        return BucketItemMapper.INSTANCE.toDtoList(bucketItemsExtractor.getClientBucketItems(
+                client.getBucket()));
+    }
 }

@@ -4,10 +4,7 @@ package com.serjn.online.controllers;
 import com.serjn.online.DTOs.BucketItemDto;
 import com.serjn.online.DTOs.ClientDto;
 import com.serjn.online.DTOs.OrderDetailsDto;
-import com.serjn.online.mappers.BucketItemMapper;
 import com.serjn.online.mappers.OrderDetailsMapper;
-import com.serjn.online.model.Client;
-import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import jakarta.validation.constraints.Size;
@@ -24,12 +21,10 @@ import java.util.List;
 public class ClientController {
     private final ClientService clientService;
     private final OrderDetailsService orderDetailsService;
-    private final BucketItemsExtractor bucketItemsExtractor;
 
     @GetMapping("/bucket")
     List<BucketItemDto> findClientBucket() {
-        Client client = clientService.findAuthenticatedClient();
-        return BucketItemMapper.INSTANCE.toDtoList(bucketItemsExtractor.getClientBucketItems(client));
+        return clientService.findClientBucket();
     }
 
     @GetMapping

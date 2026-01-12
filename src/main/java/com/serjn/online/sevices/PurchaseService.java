@@ -28,7 +28,7 @@ public class PurchaseService {
     public void purchase() {
         Client client = clientService.findAuthenticatedClient();
         List<BucketItem> bucketItems =
-                bucketItemsExtractor.getClientBucketItems(client);
+                bucketItemsExtractor.getClientBucketItems(client.getBucket());
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);

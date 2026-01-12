@@ -2,7 +2,6 @@ package com.serjn.online.sevices.utils;
 
 import com.serjn.online.model.Bucket;
 import com.serjn.online.model.BucketItem;
-import com.serjn.online.model.Client;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,12 +11,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BucketItemsExtractor {
 
-    public List<BucketItem> getClientBucketItems(Client client) {
-        Bucket bucket = client.getBucket();
+    public List<BucketItem> getClientBucketItems(Bucket bucket) {
         return bucket.getBucketItems();
     }
 
-    public List<BucketItem> getClientBucketItemsExistingData(Client client, Bucket bucket) {
-        return bucket.getBucketItems();
-    }
+
+
 }

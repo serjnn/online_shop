@@ -25,7 +25,7 @@ public class BucketService {
     public void addProductToBucket(Long productId) {
         Client client = clientService.findAuthenticatedClient();
         Bucket bucket = client.getBucket();
-        List<BucketItem> bucketItems = bucketItemsExtractor.getClientBucketItemsExistingData(client, bucket);
+        List<BucketItem> bucketItems = bucketItemsExtractor.getClientBucketItemsExistingData(bucket);
         BucketItem existingBucketItem = findExistingBucketItem(bucketItems, productId);
 
 
