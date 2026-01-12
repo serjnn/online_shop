@@ -1,18 +1,12 @@
 package com.serjn.online.controllers;
 
 import com.serjn.online.DTOs.ProductDto;
-import com.serjn.online.exceptions.EmptyAddressException;
-import com.serjn.online.exceptions.InsufficientFundsException;
-import com.serjn.online.models.Category;
-import com.serjn.online.models.OrderDetails;
-import com.serjn.online.models.Product;
+import com.serjn.online.mappers.ProductMapper;
+import com.serjn.online.model.Category;
 import com.serjn.online.sevices.BucketService;
-import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.ProductService;
 import com.serjn.online.sevices.PurchaseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,41 +17,31 @@ import java.util.List;
 public class ShoppingController {
 
     private final BucketService bucketService;
-    private final OrderDetailsService orderDetailsService;
     private final PurchaseService purchaseService;
     private final ProductService productService;
 
-
     @GetMapping("/purchase")
-    ResponseEntity<String> purchase() {
+    void purchase() {
         purchaseService.purchase();
-        return ResponseEntity.ok("Purchase successful");
     }
 
-    @GetMapping("/findClientsOrderDetails/{clientId}")
-    List<OrderDetails> findClientsOrderDetails() {
-        return orderDetailsService.findClientsOrderDetails();
-    }
-
-    @GetMapping("/addProductToBucket/{productId}")
-    void addProductToBucket(@PathVariable("productId") Long productId) {
+    @PostMapping("/bucket/products")
+    void addProductToBucket(@RequestBody Long productId) {
         bucketService.addProductToBucket(productId);
     }
 
-    @GetMapping("/removeProduct/{productId}")
+    @DeleteMapping("/bucket/products/{productId}")
     void removeFromBucket(@PathVariable("productId") Long productId) {
         bucketService.removeProductFromBucket(productId);
     }
 
-
-    @GetMapping("/findProductByCat/{category}")
-    List<Product> findProductByCat(@PathVariable("category") Category category) {
-        return productService.findProductsByCategory(category);
+    @GetMapping("/products")
+    List<ProductDto> findProductsByCategory(@RequestParam("category") Category category) {
+        return ProductMapper.INSTANCE.toDtoList(productService.findProductsByCategory(category));
     }
 
-    @PostMapping("/addNewProduct")
+    @PostMapping("/products")
     void addNewProduct(@RequestBody ProductDto productDto) {
-        productService.saveProduct(productDto);
-
+        productService.saveProduct(ProductMapper.INSTANCE.toEntity(productDto));
     }
 }

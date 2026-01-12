@@ -1,10 +1,15 @@
 package com.serjn.online.controllers;
 
 
+import com.serjn.online.DTOs.BucketItemDto;
 import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
+import com.serjn.online.DTOs.OrderDetailsDto;
+import com.serjn.online.mappers.BucketItemMapper;
+import com.serjn.online.mappers.OrderDetailsMapper;
+import com.serjn.online.model.Client;
+import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import com.serjn.online.sevices.ClientService;
+import com.serjn.online.sevices.OrderDetailsService;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -13,34 +18,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/me")
 @RequiredArgsConstructor
 @Validated
 public class ClientController {
     private final ClientService clientService;
+    private final OrderDetailsService orderDetailsService;
+    private final BucketItemsExtractor bucketItemsExtractor;
 
-    @GetMapping("/findClientsBucket")
-    List<BucketItem> findClientsBucket() {
+    @GetMapping("/bucket")
+    List<BucketItemDto> findClientBucket() {
         Client client = clientService.findAuthenticatedClient();
-        return clientService.findClientsBucket(client);
+        return BucketItemMapper.INSTANCE.toDtoList(bucketItemsExtractor.getClientBucketItems(client));
     }
 
-
-    @GetMapping("/findClientInfo")
+    @GetMapping
     ClientDto findClientInfo() {
         return clientService.findClientInfo();
     }
 
-
-    @GetMapping("/changeAddress")
-    void changeAddress(@Size(min = 10)  @RequestParam String address) {
+    @PatchMapping("/address")
+    void changeAddress(@Size(min = 10) @RequestBody String address) {
         clientService.setAddress(address);
     }
 
-    @GetMapping("/secured")
-    String secured() {
-        return "";
+    @GetMapping("/orders")
+    List<OrderDetailsDto> findOrderDetails() {
+        return OrderDetailsMapper.INSTANCE.toDtoList(orderDetailsService.findClientsOrderDetails());
     }
-
 
 }

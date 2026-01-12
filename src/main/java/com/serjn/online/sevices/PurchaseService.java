@@ -2,9 +2,10 @@ package com.serjn.online.sevices;
 
 import com.serjn.online.exceptions.EmptyAddressException;
 import com.serjn.online.exceptions.InsufficientFundsException;
-import com.serjn.online.models.BucketItem;
-import com.serjn.online.models.Client;
-import com.serjn.online.models.OrderDetails;
+import com.serjn.online.model.BucketItem;
+import com.serjn.online.model.Client;
+import com.serjn.online.model.OrderDetails;
+import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +20,15 @@ import java.util.stream.Collectors;
 public class PurchaseService {
 
     private final ClientService clientService;
+    private final OrderDetailsService orderDetailsService;
 
-                                                                                                                                                                                                                private final OrderDetailsService orderDetailsService;
+    private final BucketItemsExtractor bucketItemsExtractor;
 
-    @Transactional
+    @Transactional //TODO separate
     public void purchase() {
         Client client = clientService.findAuthenticatedClient();
-        List<BucketItem> bucketItems = clientService.findClientsBucket(client);
+        List<BucketItem> bucketItems =
+                bucketItemsExtractor.getClientBucketItems(client);
         BigDecimal sum = getSumOfBucket(bucketItems);
 
         purchaseValidationChecks(client, sum);
@@ -41,26 +44,22 @@ public class PurchaseService {
 
         clientService.save(client);
         orderDetailsService.save(orderDetails);
-
-
-
     }
-
-
-
 
 
     private BigDecimal getSumOfBucket(List<BucketItem> bucketItems) {
-        int res = bucketItems.stream().mapToInt(i -> i.getProduct().getPrice() * i.getQuantity()).sum();
-        return BigDecimal.valueOf(res);
+        return bucketItems.stream()
+                .map(bucketItem -> bucketItem.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(bucketItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void purchaseValidationChecks(Client client, BigDecimal sum) {
-        if (client.getAddress().isEmpty()) {
-            throw new EmptyAddressException();
+        if (client.getAddress() == null) {
+            throw new EmptyAddressException("Address is null");
         }
         if (client.getBalance().compareTo(sum) < 0) {
-            throw new InsufficientFundsException();
+            throw new InsufficientFundsException("Insufficient funds for purchase");
         }
 
     }

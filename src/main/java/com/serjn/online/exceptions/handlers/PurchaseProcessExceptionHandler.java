@@ -14,12 +14,12 @@ public class PurchaseProcessExceptionHandler {
     @ExceptionHandler(EmptyAddressException.class)
     public ResponseEntity<String> handleEmptyAddress() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Empty address");
+                .body("Client's address is not stated");
     }
 
     @ExceptionHandler(InsufficientFundsException.class)
     public ResponseEntity<String> handleInsufficientFunds() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Not enough money");
+                .body("Client does not have enough money");
     }
 }

@@ -1,7 +1,6 @@
-package com.serjn.online.models;
+package com.serjn.online.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +27,6 @@ public class Client {
     @Column(length = 300)
     private String address;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL)
     private Bucket bucket;
 

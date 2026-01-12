@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: ${db-url:jdbc:postgresql://localhost:5432/monolyth}
     username: ${db-username:postgres}
-    password: ${db-password:Vaifery111}
+    password: ${db-password:qwe}
   jpa:
     show-sql: true
     hibernate:

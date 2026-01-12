@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 @Getter
 @AllArgsConstructor
 public class ClientDto {
-    private Long id;
     private String mail;
     private String address;
     private BigDecimal balance;
