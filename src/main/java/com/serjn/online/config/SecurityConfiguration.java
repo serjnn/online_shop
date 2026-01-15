@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,17 +36,23 @@ public class SecurityConfiguration {
                     registry.requestMatchers("/",
                             "/api/v1/register",
                             "/api/v1/auth",
-                            "/swagger-ui.html",
-                            "/v3/api-docs",
+                            "/swagger-ui/**",
+                            "/v3/api-docs/**",
                             "/api/v1/products/**").permitAll();
                     registry.anyRequest().
-                            hasRole("client");
+                            permitAll();
+//                            hasRole("client");
         })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/swagger-ui/**", "/v3/api-docs/**");
     }
 
     @Bean
