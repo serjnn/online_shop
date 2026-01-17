@@ -34,8 +34,8 @@ public class AuthService {
         Bucket bucket = new Bucket();
 
         Client client = new Client(
-                registerRequestDto.getMail(),
-                passwordEncoder.encode(registerRequestDto.getPassword()),
+                registerRequestDto.mail(),
+                passwordEncoder.encode(registerRequestDto.password()),
                 bucket,
                 "client"
         );
@@ -48,14 +48,14 @@ public class AuthService {
     public String auth(@RequestBody AuthRequestDto authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authRequest.getMail(),
-                    authRequest.getPassword())
+                    authRequest.mail(),
+                    authRequest.password())
             );
         } catch (BadCredentialsException e) {
             throw new AuthFailedException("Incorrect mail or password");
         }
 
-        UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.getMail());
+        UserDetails userDetails = clientDetailService.loadUserByUsername(authRequest.mail());
         String token = jwtService.generateToken(userDetails);
         Assert.hasText(token,"Token is null");
         return token;

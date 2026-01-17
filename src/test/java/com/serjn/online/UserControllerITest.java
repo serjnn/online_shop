@@ -52,19 +52,12 @@ class UserControllerITest {
         Client client = new Client();
         client.setMail("test@example.com");
         client.setPassword("encodedPassword12345");
-
-        RegisterRequestDto registerRequest = new RegisterRequestDto();
-        registerRequest.setMail("test@example.com");
-        registerRequest.setPassword("password12345");
-
+        RegisterRequestDto registerRequest = new RegisterRequestDto("test@example.com", "password12345");
         mockMvc.perform(post("/api/v1/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk());
-
-        AuthRequestDto authRequest = new AuthRequestDto();
-        authRequest.setMail("test@example.com");
-        authRequest.setPassword("password12345");
+        AuthRequestDto authRequest = new AuthRequestDto("test@example.com", "password12345");
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth")
                         .contentType(MediaType.APPLICATION_JSON)

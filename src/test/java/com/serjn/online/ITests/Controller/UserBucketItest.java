@@ -52,18 +52,14 @@ class UserBucketITest {
 
         String address = "123 some 123 some";
 
-        RegisterRequestDto registerRequest = new RegisterRequestDto();
-        registerRequest.setMail(userMail);
-        registerRequest.setPassword(userPassword);
+        RegisterRequestDto registerRequest = new RegisterRequestDto(userMail, userPassword);
 
         mockMvc.perform(post("/api/v1/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk());
 
-        AuthRequestDto authRequest = new AuthRequestDto();
-        authRequest.setMail(userMail);
-        authRequest.setPassword(userPassword);
+        AuthRequestDto authRequest = new AuthRequestDto(userMail, userPassword);
 
         MvcResult result = mockMvc.perform(post("/api/v1/auth")
                         .contentType(MediaType.APPLICATION_JSON)
