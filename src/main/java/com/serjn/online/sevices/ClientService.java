@@ -1,11 +1,11 @@
 package com.serjn.online.sevices;
 
 
-import com.serjn.online.DTOs.BucketItemDto;
-import com.serjn.online.DTOs.ClientDto;
+import com.serjn.online.model.DTOs.BucketItemDto;
+import com.serjn.online.model.DTOs.ClientDto;
 import com.serjn.online.mappers.BucketItemMapper;
 import com.serjn.online.mappers.ClientMapper;
-import com.serjn.online.model.Client;
+import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.ClientRepository;
 import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;

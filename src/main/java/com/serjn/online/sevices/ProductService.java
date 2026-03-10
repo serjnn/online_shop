@@ -2,8 +2,8 @@ package com.serjn.online.sevices;
 
 
 import com.serjn.online.exceptions.NoSuchProductException;
-import com.serjn.online.model.Category;
-import com.serjn.online.model.Product;
+import com.serjn.online.model.enums.Category;
+import com.serjn.online.model.entities.Product;
 import com.serjn.online.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.serjn.online.sevices;
 
 
-import com.serjn.online.model.OrderDetails;
+import com.serjn.online.model.entities.OrderDetails;
 import com.serjn.online.repositories.OrderDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

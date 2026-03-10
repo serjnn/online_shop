@@ -1,4 +1,4 @@
-package com.serjn.online.DTOs;
+package com.serjn.online.model.DTOs;
 
 import java.time.LocalDateTime;
 

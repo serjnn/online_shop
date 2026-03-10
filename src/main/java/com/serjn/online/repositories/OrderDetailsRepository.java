@@ -1,6 +1,6 @@
 package com.serjn.online.repositories;
 
-import com.serjn.online.model.OrderDetails;
+import com.serjn.online.model.entities.OrderDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

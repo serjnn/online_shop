@@ -1,10 +1,10 @@
 package com.serjn.online.services.utils;
 
 
-import com.serjn.online.model.Bucket;
-import com.serjn.online.model.BucketItem;
-import com.serjn.online.model.Client;
-import com.serjn.online.model.Product;
+import com.serjn.online.model.entities.Bucket;
+import com.serjn.online.model.entities.BucketItem;
+import com.serjn.online.model.entities.Client;
+import com.serjn.online.model.entities.Product;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
 import com.serjn.online.sevices.PurchaseService;

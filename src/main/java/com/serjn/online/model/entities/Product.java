@@ -1,6 +1,7 @@
-package com.serjn.online.model;
+package com.serjn.online.model.entities;
 
 
+import com.serjn.online.model.enums.Category;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

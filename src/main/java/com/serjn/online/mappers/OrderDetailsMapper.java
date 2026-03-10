@@ -1,7 +1,7 @@
 package com.serjn.online.mappers;
 
-import com.serjn.online.DTOs.OrderDetailsDto;
-import com.serjn.online.model.OrderDetails;
+import com.serjn.online.model.DTOs.OrderDetailsDto;
+import com.serjn.online.model.entities.OrderDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

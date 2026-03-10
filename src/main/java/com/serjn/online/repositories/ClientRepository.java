@@ -1,6 +1,6 @@
 package com.serjn.online.repositories;
 
-import com.serjn.online.model.Client;
+import com.serjn.online.model.entities.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

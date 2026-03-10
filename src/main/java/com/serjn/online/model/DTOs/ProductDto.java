@@ -1,6 +1,6 @@
-package com.serjn.online.DTOs;
+package com.serjn.online.model.DTOs;
 
-import com.serjn.online.model.Category;
+import com.serjn.online.model.enums.Category;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 

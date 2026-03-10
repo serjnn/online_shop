@@ -1,9 +1,9 @@
 package com.serjn.online.sevices;
 
 
-import com.serjn.online.model.Bucket;
-import com.serjn.online.model.BucketItem;
-import com.serjn.online.model.Client;
+import com.serjn.online.model.entities.Bucket;
+import com.serjn.online.model.entities.BucketItem;
+import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.BucketRepository;
 import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;

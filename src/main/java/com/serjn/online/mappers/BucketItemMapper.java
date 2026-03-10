@@ -1,7 +1,7 @@
 package com.serjn.online.mappers;
 
-import com.serjn.online.DTOs.BucketItemDto;
-import com.serjn.online.model.BucketItem;
+import com.serjn.online.model.DTOs.BucketItemDto;
+import com.serjn.online.model.entities.BucketItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

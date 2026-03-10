@@ -1,11 +1,11 @@
 package com.serjn.online;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjn.online.DTOs.AuthRequestDto;
-import com.serjn.online.DTOs.RegisterRequestDto;
-import com.serjn.online.model.Category;
-import com.serjn.online.model.Client;
-import com.serjn.online.model.Product;
+import com.serjn.online.model.DTOs.AuthRequestDto;
+import com.serjn.online.model.DTOs.RegisterRequestDto;
+import com.serjn.online.model.enums.Category;
+import com.serjn.online.model.entities.Client;
+import com.serjn.online.model.entities.Product;
 import com.serjn.online.repositories.ClientRepository;
 import com.serjn.online.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;

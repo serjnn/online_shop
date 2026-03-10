@@ -1,7 +1,7 @@
 package com.serjn.online.sevices.utils;
 
-import com.serjn.online.model.Bucket;
-import com.serjn.online.model.BucketItem;
+import com.serjn.online.model.entities.Bucket;
+import com.serjn.online.model.entities.BucketItem;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

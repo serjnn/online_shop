@@ -1,12 +1,12 @@
 package com.serjn.online.sevices;
 
 
-import com.serjn.online.DTOs.AuthRequestDto;
-import com.serjn.online.DTOs.RegisterRequestDto;
+import com.serjn.online.model.DTOs.AuthRequestDto;
+import com.serjn.online.model.DTOs.RegisterRequestDto;
 import com.serjn.online.JWT.JwtService;
 import com.serjn.online.exceptions.AuthFailedException;
-import com.serjn.online.model.Bucket;
-import com.serjn.online.model.Client;
+import com.serjn.online.model.entities.Bucket;
+import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

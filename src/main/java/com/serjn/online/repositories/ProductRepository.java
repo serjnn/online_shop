@@ -1,7 +1,7 @@
 package com.serjn.online.repositories;
 
-import com.serjn.online.model.Category;
-import com.serjn.online.model.Product;
+import com.serjn.online.model.enums.Category;
+import com.serjn.online.model.entities.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

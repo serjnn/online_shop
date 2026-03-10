@@ -1,8 +1,8 @@
 package com.serjn.online.controllers;
 
 
-import com.serjn.online.DTOs.AuthRequestDto;
-import com.serjn.online.DTOs.RegisterRequestDto;
+import com.serjn.online.model.DTOs.AuthRequestDto;
+import com.serjn.online.model.DTOs.RegisterRequestDto;
 import com.serjn.online.sevices.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -1,8 +1,8 @@
 package com.serjn.online.controllers;
 
-import com.serjn.online.DTOs.ProductDto;
+import com.serjn.online.model.DTOs.ProductDto;
 import com.serjn.online.mappers.ProductMapper;
-import com.serjn.online.model.Category;
+import com.serjn.online.model.enums.Category;
 import com.serjn.online.sevices.BucketService;
 import com.serjn.online.sevices.ProductService;
 import com.serjn.online.sevices.PurchaseService;

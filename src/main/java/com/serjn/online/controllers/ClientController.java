@@ -1,9 +1,9 @@
 package com.serjn.online.controllers;
 
 
-import com.serjn.online.DTOs.BucketItemDto;
-import com.serjn.online.DTOs.ClientDto;
-import com.serjn.online.DTOs.OrderDetailsDto;
+import com.serjn.online.model.DTOs.BucketItemDto;
+import com.serjn.online.model.DTOs.ClientDto;
+import com.serjn.online.model.DTOs.OrderDetailsDto;
 import com.serjn.online.mappers.OrderDetailsMapper;
 import com.serjn.online.sevices.ClientService;
 import com.serjn.online.sevices.OrderDetailsService;
