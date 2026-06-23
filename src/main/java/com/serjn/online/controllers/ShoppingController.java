@@ -9,6 +9,8 @@ import com.serjn.online.services.PurchaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import com.serjn.online.model.dto.AddProductRequestDto;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,8 +35,8 @@ public class ShoppingController {
     @Operation(summary = "Add product to bucket", description = "Adds a product to the user's bucket")
     @PostMapping("/bucket/products")
     @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
-    void addProductToBucket(@RequestBody Long productId) {
-        bucketService.addProductToBucket(productId);
+    void addProductToBucket(@Valid @RequestBody AddProductRequestDto request) {
+        bucketService.addProductToBucket(request.productId());
     }
 
     @Operation(summary = "Remove product from bucket", description = "Removes a product from the user's bucket")

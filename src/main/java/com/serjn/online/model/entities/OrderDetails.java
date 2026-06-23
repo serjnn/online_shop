@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,8 +21,10 @@ public class OrderDetails {
 
     private Long clientId;
 
-    @Column(name = "products_ids")
-    private String productIds;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "order_products", joinColumns = @JoinColumn(name = "order_id"))
+    @Column(name = "product_id")
+    private List<Long> productIds;
 
     private BigDecimal sum;
 
@@ -29,7 +32,7 @@ public class OrderDetails {
     private LocalDateTime createdAt;
 
 
-    public OrderDetails(Long clientId, String productIds, BigDecimal sum) {
+    public OrderDetails(Long clientId, List<Long> productIds, BigDecimal sum) {
         this.clientId = clientId;
         this.productIds = productIds;
         this.sum = sum;

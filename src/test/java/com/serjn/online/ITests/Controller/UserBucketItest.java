@@ -3,6 +3,8 @@ package com.serjn.online.ITests.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjn.online.model.dto.AuthRequestDto;
 import com.serjn.online.model.dto.RegisterRequestDto;
+import com.serjn.online.model.dto.AddProductRequestDto;
+import com.serjn.online.model.dto.AddressRequestDto;
 import com.serjn.online.model.enums.Category;
 import com.serjn.online.model.entities.Product;
 import com.serjn.online.repositories.ClientRepository;
@@ -71,11 +73,12 @@ class UserBucketITest {
         this.token = result.getResponse().getContentAsString();
 
         //setting address
+        AddressRequestDto addressRequest = new AddressRequestDto(address);
         mockMvc.perform(patch("/api/v1/me/address")
                         .header("Authorization", "Bearer " + this.
                                 token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(address))
+                        .content(objectMapper.writeValueAsString(addressRequest)))
                 .andExpect(status().isOk());
 
 
@@ -138,10 +141,11 @@ class UserBucketITest {
 
 
     void addProductToBucket(Long productId) throws Exception {
+        AddProductRequestDto addProductRequest = new AddProductRequestDto(productId);
         mockMvc.perform(post("/api/v1/bucket/products")
                         .header("Authorization", "Bearer " + this.token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(String.valueOf(productId)))
+                        .content(objectMapper.writeValueAsString(addProductRequest)))
                 .andExpect(status().isCreated());
     }
 }

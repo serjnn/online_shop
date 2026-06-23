@@ -59,13 +59,12 @@ public class PurchaseService {
         }
 
     }
+    private List<Long> getProductIds(List<BucketItem> bucketItems) {
 
-    private String getProductIds(List<BucketItem> bucketItems) {
         return bucketItems
                 .stream()
-                .mapToLong(i -> i.getProduct().getId())
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(","));
+                .map(i -> i.getProduct().getId())
+                .collect(Collectors.toList());
     }
 
 

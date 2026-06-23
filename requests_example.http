@@ -47,7 +47,9 @@ POST http://localhost:8080/api/v1/bucket/products
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-1
+{
+  "productId": 1
+}
 
 ###
 
@@ -87,4 +89,6 @@ PATCH http://localhost:8080/api/v1/me/address
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-"123 New Address, City"
+{
+  "address": "123 New Address, City"
+}

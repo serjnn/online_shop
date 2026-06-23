@@ -3,6 +3,7 @@ package com.serjn.online;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.serjn.online.model.dto.AuthRequestDto;
 import com.serjn.online.model.dto.RegisterRequestDto;
+import com.serjn.online.model.dto.AddProductRequestDto;
 import com.serjn.online.model.enums.Category;
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.model.entities.Product;
@@ -73,21 +74,22 @@ class UserControllerITest {
 
     @Test
     void shouldAddProductToBucket() throws Exception {
-
+        AddProductRequestDto addProductRequest = new AddProductRequestDto(product1.getId());
         mockMvc.perform(post("/api/v1/bucket/products")
                         .header("Authorization", "Bearer " + this.token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(String.valueOf(product1.getId())))
+                        .content(objectMapper.writeValueAsString(addProductRequest)))
                 .andExpect(status().isCreated());
 
     }
 
     @Test
     void shouldMatchAddedProducts() throws Exception {
+        AddProductRequestDto addProductRequest = new AddProductRequestDto(product2.getId());
         mockMvc.perform(post("/api/v1/bucket/products")
                 .header("Authorization", "Bearer " + this.token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(String.valueOf(product2.getId())));
+                .content(objectMapper.writeValueAsString(addProductRequest)));
 
         mockMvc.perform(get("/api/v1/me/bucket")
                         .header("Authorization", "Bearer " + this.token))

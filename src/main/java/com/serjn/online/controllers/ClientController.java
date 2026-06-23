@@ -10,6 +10,8 @@ import com.serjn.online.services.OrderDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Size;
+import com.serjn.online.model.dto.AddressRequestDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +42,8 @@ public class ClientController {
 
     @Operation(summary = "Change address", description = "Updates the address of the authenticated client")
     @PatchMapping("/address")
-    void changeAddress(@Size(min = 10) @RequestBody String address) {
-        clientService.setAddress(address);
+    void changeAddress(@Valid @RequestBody AddressRequestDto addressRequest) {
+        clientService.setAddress(addressRequest.address());
     }
 
     @Operation(summary = "Get order details", description = "Retrieves the order history of the authenticated client")
