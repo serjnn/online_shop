@@ -1,6 +1,6 @@
-package com.serjn.online.JWT;
+package com.serjn.online.jwt;
 
-import com.serjn.online.sevices.ClientDetailService;
+import com.serjn.online.services.ClientDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

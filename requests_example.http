@@ -5,9 +5,8 @@ POST http://localhost:8080/api/v1/register
 Content-Type: application/json
 
 {
-  "name": "testuser",
-  "email": "test@example.com",
-  "password": "password123"
+  "mail": "test@example.com",
+  "password": "password12345"
 }
 
 ###
@@ -17,8 +16,8 @@ POST http://localhost:8080/api/v1/auth
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
-  "password": "password123"
+  "mail": "test@example.com",
+  "password": "password12345"
 }
 
 ### ShoppingController ###
@@ -30,6 +29,7 @@ Authorization: Bearer {{token}}
 
 {
   "name": "Laptop",
+  "description": "Powerful laptop for work and gaming",
   "price": 1200.00,
   "category": "ELECTRONICS"
 }
@@ -58,32 +58,32 @@ Authorization: Bearer {{token}}
 ###
 
 # Get client's order details (requires auth)
-GET http://localhost:8080/api/v1/orders
+GET http://localhost:8080/api/v1/me/orders
 Authorization: Bearer {{token}}
 
 ###
 
 # Purchase items in the bucket (requires auth)
-POST http://localhost:8080/api/v1/purchases
+POST http://localhost:8080/api/v1/purchase
 Authorization: Bearer {{token}}
 
 
 ### ClientController ###
 
 # Get client info (requires auth)
-GET http://localhost:8080/api/v1/clients/me
+GET http://localhost:8080/api/v1/me
 Authorization: Bearer {{token}}
 
 ###
 
 # Get client's bucket (requires auth)
-GET http://localhost:8080/api/v1/clients/me/bucket
+GET http://localhost:8080/api/v1/me/bucket
 Authorization: Bearer {{token}}
 
 ###
 
 # Change client's address (requires auth)
-PATCH http://localhost:8080/api/v1/clients/me/address
+PATCH http://localhost:8080/api/v1/me/address
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

@@ -1,4 +1,4 @@
-package com.serjn.online.model.DTOs;
+package com.serjn.online.model.dto;
 
 import com.serjn.online.model.enums.Category;
 import jakarta.validation.constraints.Size;

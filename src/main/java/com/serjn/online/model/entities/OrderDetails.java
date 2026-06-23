@@ -19,16 +19,20 @@ public class OrderDetails {
     private long id;
 
     private Long clientId;
-    private String products_ids;
+
+    @Column(name = "products_ids")
+    private String productIds;
+
     private BigDecimal sum;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
 
-    public OrderDetails(Long clientId, String products_ids, BigDecimal sum) {
+    public OrderDetails(Long clientId, String productIds, BigDecimal sum) {
         this.clientId = clientId;
-        this.products_ids = products_ids;
+        this.productIds = productIds;
         this.sum = sum;
-        this.created_at = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 }

@@ -16,7 +16,7 @@ public class ShoppingExceptions {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleNoSuchProductException(
+    public ResponseEntity<String> handleIllegalArgumentException(
             IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }

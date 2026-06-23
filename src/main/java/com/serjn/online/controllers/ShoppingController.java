@@ -1,11 +1,11 @@
 package com.serjn.online.controllers;
 
-import com.serjn.online.model.DTOs.ProductDto;
+import com.serjn.online.model.dto.ProductDto;
 import com.serjn.online.mappers.ProductMapper;
 import com.serjn.online.model.enums.Category;
-import com.serjn.online.sevices.BucketService;
-import com.serjn.online.sevices.ProductService;
-import com.serjn.online.sevices.PurchaseService;
+import com.serjn.online.services.BucketService;
+import com.serjn.online.services.ProductService;
+import com.serjn.online.services.PurchaseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +22,17 @@ public class ShoppingController {
     private final BucketService bucketService;
     private final PurchaseService purchaseService;
     private final ProductService productService;
+    private final ProductMapper productMapper;
 
     @Operation(summary = "Purchase items", description = "Processes the purchase of items in the bucket")
-    @GetMapping("/purchase")
+    @PostMapping("/purchase")
     void purchase() {
         purchaseService.purchase();
     }
 
     @Operation(summary = "Add product to bucket", description = "Adds a product to the user's bucket")
     @PostMapping("/bucket/products")
+    @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
     void addProductToBucket(@RequestBody Long productId) {
         bucketService.addProductToBucket(productId);
     }
@@ -44,12 +46,13 @@ public class ShoppingController {
     @Operation(summary = "Find products by category", description = "Retrieves a list of products in a specific category")
     @GetMapping("/products")
     List<ProductDto> findProductsByCategory(@RequestParam("category") Category category) {
-        return ProductMapper.INSTANCE.toDtoList(productService.findProductsByCategory(category));
+        return productMapper.toDtoList(productService.findProductsByCategory(category));
     }
 
     @Operation(summary = "Add new product", description = "Adds a new product to the catalog")
     @PostMapping("/products")
+    @ResponseStatus(org.springframework.http.HttpStatus.CREATED)
     void addNewProduct(@RequestBody ProductDto productDto) {
-        productService.saveProduct(ProductMapper.INSTANCE.toEntity(productDto));
+        productService.saveProduct(productMapper.toEntity(productDto));
     }
 }

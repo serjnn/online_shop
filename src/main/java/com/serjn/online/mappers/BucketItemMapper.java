@@ -1,6 +1,6 @@
 package com.serjn.online.mappers;
 
-import com.serjn.online.model.DTOs.BucketItemDto;
+import com.serjn.online.model.dto.BucketItemDto;
 import com.serjn.online.model.entities.BucketItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -8,10 +8,8 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BucketItemMapper {
-
-    BucketItemMapper INSTANCE = Mappers.getMapper(BucketItemMapper.class);
 
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.name", target = "productName")

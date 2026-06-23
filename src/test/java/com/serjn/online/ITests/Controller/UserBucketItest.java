@@ -1,8 +1,8 @@
 package com.serjn.online.ITests.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjn.online.model.DTOs.AuthRequestDto;
-import com.serjn.online.model.DTOs.RegisterRequestDto;
+import com.serjn.online.model.dto.AuthRequestDto;
+import com.serjn.online.model.dto.RegisterRequestDto;
 import com.serjn.online.model.enums.Category;
 import com.serjn.online.model.entities.Product;
 import com.serjn.online.repositories.ClientRepository;
@@ -113,7 +113,7 @@ class UserBucketITest {
     void purchaseTest() throws Exception {
         fillBucket();
 
-        mockMvc.perform(get("/api/v1/purchase")
+        mockMvc.perform(post("/api/v1/purchase")
                         .header("Authorization", "Bearer " + this.token))
                 .andExpect(status().isOk());
 
@@ -142,6 +142,6 @@ class UserBucketITest {
                         .header("Authorization", "Bearer " + this.token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(productId)))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 }

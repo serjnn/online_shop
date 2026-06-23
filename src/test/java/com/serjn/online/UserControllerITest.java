@@ -1,8 +1,8 @@
 package com.serjn.online;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serjn.online.model.DTOs.AuthRequestDto;
-import com.serjn.online.model.DTOs.RegisterRequestDto;
+import com.serjn.online.model.dto.AuthRequestDto;
+import com.serjn.online.model.dto.RegisterRequestDto;
 import com.serjn.online.model.enums.Category;
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.model.entities.Product;
@@ -78,7 +78,7 @@ class UserControllerITest {
                         .header("Authorization", "Bearer " + this.token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(String.valueOf(product1.getId())))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
     }
 

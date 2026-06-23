@@ -1,27 +1,29 @@
-package com.serjn.online.sevices;
+package com.serjn.online.services;
 
 
-import com.serjn.online.model.DTOs.BucketItemDto;
-import com.serjn.online.model.DTOs.ClientDto;
+import com.serjn.online.model.dto.BucketItemDto;
+import com.serjn.online.model.dto.ClientDto;
 import com.serjn.online.mappers.BucketItemMapper;
 import com.serjn.online.mappers.ClientMapper;
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.ClientRepository;
-import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClientService {
 
     private final ClientRepository clientRepository;
-    private final BucketItemsExtractor bucketItemsExtractor;
+    private final ClientMapper clientMapper;
+    private final BucketItemMapper bucketItemMapper;
 
     public Client findClientByMail(String mail) {
         return clientRepository.findByMail(mail).orElseThrow(() ->
@@ -35,6 +37,7 @@ public class ClientService {
     }
 
 
+    @Transactional
     public void setAddress(String address) {
         Client client = findAuthenticatedClient();
         client.setAddress(address);
@@ -44,17 +47,17 @@ public class ClientService {
 
     public ClientDto findClientInfo() {
         Client client = findAuthenticatedClient();
-        return ClientMapper.INSTANCE.toDto(client);
+        return clientMapper.toDto(client);
     }
 
 
+    @Transactional
     public void save(Client client) {
         clientRepository.save(client);
     }
 
     public List<BucketItemDto> findClientBucket() {
         Client client = findAuthenticatedClient();
-        return BucketItemMapper.INSTANCE.toDtoList(bucketItemsExtractor.getClientBucketItems(
-                client.getBucket()));
+        return bucketItemMapper.toDtoList(client.getBucket().getBucketItems());
     }
 }

@@ -1,31 +1,30 @@
-package com.serjn.online.sevices;
+package com.serjn.online.services;
 
 
 import com.serjn.online.model.entities.Bucket;
 import com.serjn.online.model.entities.BucketItem;
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.BucketRepository;
-import com.serjn.online.sevices.utils.BucketItemsExtractor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BucketService {
 
     private final ClientService clientService;
     private final BucketRepository bucketRepository;
     private final ProductService productService;
 
-    private final BucketItemsExtractor bucketItemsExtractor;
-
 
     public void addProductToBucket(Long productId) {
         Client client = clientService.findAuthenticatedClient();
         Bucket bucket = client.getBucket();
-        List<BucketItem> bucketItems = bucketItemsExtractor.getClientBucketItems(bucket);
+        List<BucketItem> bucketItems = bucket.getBucketItems();
         BucketItem existingBucketItem = findExistingBucketItem(bucketItems, productId);
 
 

@@ -1,4 +1,4 @@
-package com.serjn.online.JWT;
+package com.serjn.online.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

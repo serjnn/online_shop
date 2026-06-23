@@ -5,10 +5,9 @@ import com.serjn.online.model.entities.Bucket;
 import com.serjn.online.model.entities.BucketItem;
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.model.entities.Product;
-import com.serjn.online.sevices.ClientService;
-import com.serjn.online.sevices.OrderDetailsService;
-import com.serjn.online.sevices.PurchaseService;
-import com.serjn.online.sevices.utils.BucketItemsExtractor;
+import com.serjn.online.services.ClientService;
+import com.serjn.online.services.OrderDetailsService;
+import com.serjn.online.services.PurchaseService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,6 @@ public class PurchaseServiceTest {
 
     @Mock
     private OrderDetailsService orderDetailsService;
-
-    @Mock
-    private BucketItemsExtractor bucketItemsExtractor;
 
     @InjectMocks
     private PurchaseService purchaseService;
@@ -76,7 +72,6 @@ public class PurchaseServiceTest {
     void purchaseSuccessTest() {
 
         when(clientService.findAuthenticatedClient()).thenReturn(client);
-        when(bucketItemsExtractor.getClientBucketItems(client.getBucket())).thenReturn(client.getBucket().getBucketItems());
 
         purchaseService.purchase();
 

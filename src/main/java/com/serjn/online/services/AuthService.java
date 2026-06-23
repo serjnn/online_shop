@@ -1,9 +1,9 @@
-package com.serjn.online.sevices;
+package com.serjn.online.services;
 
 
-import com.serjn.online.model.DTOs.AuthRequestDto;
-import com.serjn.online.model.DTOs.RegisterRequestDto;
-import com.serjn.online.JWT.JwtService;
+import com.serjn.online.model.dto.AuthRequestDto;
+import com.serjn.online.model.dto.RegisterRequestDto;
+import com.serjn.online.jwt.JwtService;
 import com.serjn.online.exceptions.AuthFailedException;
 import com.serjn.online.model.entities.Bucket;
 import com.serjn.online.model.entities.Client;
@@ -16,12 +16,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -29,7 +30,11 @@ public class AuthService {
     private final JwtService jwtService;
     private final ClientRepository clientRepository;
 
+    @Transactional
     public void register(RegisterRequestDto registerRequestDto) {
+        if (clientRepository.findByMail(registerRequestDto.mail()).isPresent()) {
+            throw new IllegalArgumentException("Client with this email already exists");
+        }
 
         Bucket bucket = new Bucket();
 
@@ -45,7 +50,7 @@ public class AuthService {
 
     }
 
-    public String auth(@RequestBody AuthRequestDto authRequest) {
+    public String auth(AuthRequestDto authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     authRequest.mail(),

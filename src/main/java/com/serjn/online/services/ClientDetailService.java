@@ -1,4 +1,4 @@
-package com.serjn.online.sevices;
+package com.serjn.online.services;
 
 import com.serjn.online.model.entities.Client;
 import com.serjn.online.repositories.ClientRepository;
@@ -9,9 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-
-
 @Service
 @RequiredArgsConstructor
 public class ClientDetailService implements UserDetailsService {
@@ -21,7 +18,7 @@ public class ClientDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String mail) throws UsernameNotFoundException {
         Client client = clientRepository.findByMail(mail).orElseThrow(() ->
-                new NoSuchElementException("No client with mail: " + mail));
+                new UsernameNotFoundException("No client with mail: " + mail));
 
         return User.builder()
                 .username(client.getMail())

@@ -1,8 +1,8 @@
 package com.serjn.online.config;
 
 
-import com.serjn.online.JWT.JwtAuthenticationFilter;
-import com.serjn.online.sevices.ClientDetailService;
+import com.serjn.online.jwt.JwtAuthenticationFilter;
+import com.serjn.online.services.ClientDetailService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +39,7 @@ public class SecurityConfiguration {
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
                             "/api/v1/products/**").permitAll();
-                    registry.anyRequest().
-                            permitAll();
-//                            hasRole("client");
+                    registry.anyRequest().hasRole("client");
         })
                 .csrf(AbstractHttpConfigurer::disable).addFilterBefore(jwtAuthFilter,
                         UsernamePasswordAuthenticationFilter.class)

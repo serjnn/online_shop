@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AuthExceptionsHandler {
 
     @ExceptionHandler(AuthFailedException.class)
-    public ResponseEntity<String> handleNoSuchProductException(AuthFailedException ex) {
+    public ResponseEntity<String> handleAuthFailedException(AuthFailedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 

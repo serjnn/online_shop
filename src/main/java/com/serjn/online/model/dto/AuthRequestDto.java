@@ -1,4 +1,4 @@
-package com.serjn.online.model.DTOs;
+package com.serjn.online.model.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
